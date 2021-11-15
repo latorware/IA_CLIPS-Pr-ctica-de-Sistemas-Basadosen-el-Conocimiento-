@@ -1,1 +1,1 @@
-# IA_CLIPS-Pr-ctica-de-Sistemas-Basadosen-el-Conocimiento-
+# IA_CLIPS-PracticaSBG
