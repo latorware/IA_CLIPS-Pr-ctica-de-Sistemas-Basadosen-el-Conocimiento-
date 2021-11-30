@@ -12,6 +12,31 @@
 #    Data properties
 #################################################################
 
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#AC
+:AC rdf:type owl:DatatypeProperty ;
+    rdfs:domain :Habitatge ;
+    rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#balco
+:balco rdf:type owl:DatatypeProperty ;
+       rdfs:domain :Habitatge ;
+       rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#calefaccio
+:calefaccio rdf:type owl:DatatypeProperty ;
+            rdfs:domain :Habitatge ;
+            rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#comunitaria
+:comunitaria rdf:type owl:DatatypeProperty ;
+             rdfs:subPropertyOf :piscina ;
+             rdfs:domain :Habitatge ;
+             rdfs:range xsd:boolean .
+
+
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#dobles
 :dobles rdf:type owl:DatatypeProperty ;
         rdfs:subPropertyOf :dormitoris ;
@@ -20,7 +45,13 @@
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#dormitoris
 :dormitoris rdf:type owl:DatatypeProperty ;
-            rdfs:domain :Habitatge .
+            rdfs:domain :Habitatge ;
+            rdfs:range xsd:int .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#garatge
+:garatge rdf:type owl:DatatypeProperty ;
+         rdfs:domain :Habitatge .
 
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#localització
@@ -30,11 +61,63 @@
               rdfs:range xsd:int .
 
 
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#mascotes_permeses
+:mascotes_permeses rdf:type owl:DatatypeProperty ;
+                   rdfs:domain :Habitatge ;
+                   rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#moblada
+:moblada rdf:type owl:DatatypeProperty ;
+         rdfs:domain :Habitatge ;
+         rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#num_pisos
+:num_pisos rdf:type owl:DatatypeProperty ;
+           rdfs:domain :Unifamiliar ;
+           rdfs:range xsd:int .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#pisc_individual
+:pisc_individual rdf:type owl:DatatypeProperty ;
+                 rdfs:subPropertyOf :piscina ;
+                 rdfs:domain :Habitatge ;
+                 rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#piscina
+:piscina rdf:type owl:DatatypeProperty ;
+         rdfs:domain :Habitatge ;
+         rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#planta
+:planta rdf:type owl:DatatypeProperty ;
+        rdfs:domain :Duplex ,
+                    :Pis ;
+        rdfs:range xsd:int .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#plaça
+:plaça rdf:type owl:DatatypeProperty ;
+       rdfs:subPropertyOf :garatge ;
+       rdfs:domain :Habitatge ;
+       rdfs:range xsd:boolean .
+
+
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#preu_mensual
 :preu_mensual rdf:type owl:DatatypeProperty ,
                        owl:FunctionalProperty ;
               rdfs:domain :Habitatge ;
               rdfs:range xsd:double .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#sencer
+:sencer rdf:type owl:DatatypeProperty ;
+        rdfs:subPropertyOf :garatge ;
+        rdfs:domain :Habitatge ;
+        rdfs:range xsd:boolean .
 
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#simples
@@ -47,6 +130,19 @@
 :superficie rdf:type owl:DatatypeProperty ;
             rdfs:domain :Habitatge ;
             rdfs:range xsd:int .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#terrassa
+:terrassa rdf:type owl:DatatypeProperty ;
+          rdfs:domain :Habitatge ;
+          rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#valor_mobles/electrodomestics
+<http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#valor_mobles/electrodomestics> rdf:type owl:DatatypeProperty ;
+                                                                                                 rdfs:subPropertyOf :moblada ;
+                                                                                                 rdfs:domain :Habitatge ;
+                                                                                                 rdfs:range xsd:double .
 
 
 #################################################################
