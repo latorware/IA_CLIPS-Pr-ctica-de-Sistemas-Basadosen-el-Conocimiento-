@@ -9,57 +9,98 @@
 <http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC> rdf:type owl:Ontology .
 
 #################################################################
+#    Data properties
+#################################################################
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#dobles
+:dobles rdf:type owl:DatatypeProperty ;
+        rdfs:subPropertyOf :dormitoris ;
+        rdfs:range xsd:int .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#dormitoris
+:dormitoris rdf:type owl:DatatypeProperty ;
+            rdfs:domain :Habitatge .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#localització
+:localització rdf:type owl:DatatypeProperty ;
+              rdfs:domain :Habitatge ,
+                          :Servei ;
+              rdfs:range xsd:int .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#preu_mensual
+:preu_mensual rdf:type owl:DatatypeProperty ,
+                       owl:FunctionalProperty ;
+              rdfs:domain :Habitatge ;
+              rdfs:range xsd:double .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#simples
+:simples rdf:type owl:DatatypeProperty ;
+         rdfs:subPropertyOf :dormitoris ;
+         rdfs:range xsd:int .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#superficie
+:superficie rdf:type owl:DatatypeProperty ;
+            rdfs:domain :Habitatge ;
+            rdfs:range xsd:int .
+
+
+#################################################################
 #    Classes
 #################################################################
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Duplex
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Duplex
 :Duplex rdf:type owl:Class ;
         rdfs:subClassOf :Habitatge .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Educacio
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Educacio
 :Educacio rdf:type owl:Class ;
           rdfs:subClassOf :Servei .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Habitatge
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Habitatge
 :Habitatge rdf:type owl:Class .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Mercat
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Mercat
 :Mercat rdf:type owl:Class ;
         rdfs:subClassOf :Servei .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Oci
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Oci
 :Oci rdf:type owl:Class ;
      rdfs:subClassOf :Servei .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Persona
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Persona
 :Persona rdf:type owl:Class .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Pis
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Pis
 :Pis rdf:type owl:Class ;
      rdfs:subClassOf :Habitatge .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Salut
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Salut
 :Salut rdf:type owl:Class ;
        rdfs:subClassOf :Servei .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Servei
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Servei
 :Servei rdf:type owl:Class .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Transport
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Transport
 :Transport rdf:type owl:Class ;
            rdfs:subClassOf :Servei .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Unifamiliar
+###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Unifamiliar
 :Unifamiliar rdf:type owl:Class ;
              rdfs:subClassOf :Habitatge .
 
