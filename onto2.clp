@@ -283,7 +283,8 @@
         (allowed-values FALSE TRUE)
         (create-accessor read-write))
     (slot edat
-        (type INTEGER)
+        (type SYMBOL)
+        (allowed-values Jove MitjanaEdat Gran MoltGran)
         (create-accessor read-write))
     (slot fills
         (type INTEGER)
@@ -323,17 +324,94 @@
     (AC TRUE)
     (superficie 45)
     (preu 450)
+    (dormitoris 1)
 )
-
-
 (Habitatge002 of CasaIndividual
     (AC TRUE)
     (superficie 120)
     (numPisos 3)
-    (preu 980)
+    (preu 1450)
+    (dormitoris 3)
+)
+(Habitatge003 of Pis
+    (AC False)
+    (superficie 60)
+    (preu 550)
+    (dormitoris 1)
+)
+(Habitatge004 of Duplex
+    (AC True)
+    (superficie 95)
+    (preu 1000)
+    (dormitoris 3)
+)
+(Habitatge005 of Pis
+    (AC True)
+    (superficie 80)
+    (preu 900)
+    (dormitoris 1)
+)
+(Habitatge006 of Atic
+    (AC True)
+    (superficie 70)
+    (preu 1000)
+    (dormitoris 1)
+)
+(Habitatge007 of Xalet
+    (AC True)
+    (superficie 140)
+    (preu 1700)
+    (dormitoris 3)
+)
+(Habitatge008 of Pis
+    (AC False)
+    (superficie 50)
+    (preu 500)
+    (dormitoris 1)
+)
+(Habitatge009 of Apartament
+    (AC True)
+    (superficie 70)
+    (preu 900)
+    (dormitoris 1)
+)
+(Habitatge010 of Pis
+    (AC True)
+    (superficie 80)
+    (preu 800)
+    (dormitoris 3)
+)
+(Habitatge011 of Pis
+    (AC False)
+    (superficie 65)
+    (preu 650)
+    (dormitoris 1)
+)
+(Habitatge012 of Atic
+    (AC True)
+    (superficie 90)
+    (preu 1300)
+    (dormitoris 3)
+)
+(Habitatge013 of CasaIndividual
+    (AC True)
+    (superficie 100)
+    (preu 1200)
+    (dormitoris 3)
+)
+(Habitatge014 of CasaAdosada
+    (AC True)
+    (superficie 90)
+    (preu 1000)
+    (dormitoris 3)
+)
+(Habitatge015 of Pis
+    (AC True)
+    (superficie 85)
+    (preu 900)
+    (dormitoris 3)
 )
 )
-
 ;Preguntes
 
 ;- Quin sou tens?
@@ -363,17 +441,6 @@
 		then (return TRUE)
 		else (return FALSE)
 	)
-)
-
-;;; Funcion para hacer una pregunta numerica-univalor
-(deffunction pregunta-numerica (?pregunta ?rangini ?rangfi)
-	(format t "%s (De %d hasta %d) " ?pregunta ?rangini ?rangfi)
-	(bind ?respuesta (read))
-	(while (not(and(>= ?respuesta ?rangini)(<= ?respuesta ?rangfi))) do
-		(format t "%s (De %d hasta %d) " ?pregunta ?rangini ?rangfi)
-		(bind ?respuesta (read))
-	)
-	?respuesta
 )
 
 ;MODULS:
@@ -435,16 +502,30 @@
 (deffunction superficie-sort (?i1 ?i2)
    (< (send ?i1 get-superficie) (send ?i2 get-superficie)))
 
-(defrule list "Imprimeix llista de habitatges"
+(defrule list "Imprimeix llista d'habitatges"
+    (children ?children)
+    (test (> ?children 1))
     =>
-    (bind ?instances (find-all-instances ((?i Habitatge)) TRUE))
+    (bind ?instances (find-all-instances ((?i Habitatge)) (> (send ?i get-dormitoris) 2)))
     (bind ?instances (sort superficie-sort ?instances))
     (progn$ (?i ?instances)
         (printout t (send ?i get-superficie) " " (send ?i get-preu) crlf)))
 
 
 
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defrule list2 "Imprimeix llista d'habitatges"
+    (children ?children)
+    (test (< ?children 3))
+    =>
+    (bind ?instances (find-all-instances ((?i Habitatge)) TRUE))
+    (bind ?instances (sort superficie-sort ?instances))
+    (progn$ (?i ?instances)
+        (printout t (send ?i get-superficie) " " (send ?i get-preu) crlf)))
 
 
 
@@ -474,9 +555,3 @@
 =>
         (printout t "Quins d'aquests barris de Barcelona t'agradaria viure?")
         (assert (neighborhood (read))))
-
-(defrule are-lights-working
-  (declare (salience 6))
-=>
-        (printout t "Are the car's lights working (yes or no)?")
-        (assert (lights-working (read))))
