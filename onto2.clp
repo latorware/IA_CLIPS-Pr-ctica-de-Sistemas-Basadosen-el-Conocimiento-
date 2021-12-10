@@ -283,7 +283,8 @@
         (allowed-values FALSE TRUE)
         (create-accessor read-write))
     (slot edat
-        (type INTEGER)
+        (type SYMBOL)
+        (allowed-values Jove MitjanaEdat Gran MoltGran)
         (create-accessor read-write))
     (slot fills
         (type INTEGER)
@@ -410,9 +411,7 @@
     (preu 900)
     (dormitoris 3)
 )
-
 )
-
 ;Preguntes
 
 ;- Quin sou tens?
@@ -442,17 +441,6 @@
 		then (return TRUE)
 		else (return FALSE)
 	)
-)
-
-;;; Funcion para hacer una pregunta numerica-univalor
-(deffunction pregunta-numerica (?pregunta ?rangini ?rangfi)
-	(format t "%s (De %d hasta %d) " ?pregunta ?rangini ?rangfi)
-	(bind ?respuesta (read))
-	(while (not(and(>= ?respuesta ?rangini)(<= ?respuesta ?rangfi))) do
-		(format t "%s (De %d hasta %d) " ?pregunta ?rangini ?rangfi)
-		(bind ?respuesta (read))
-	)
-	?respuesta
 )
 
 ;MODULS:
@@ -514,16 +502,30 @@
 (deffunction superficie-sort (?i1 ?i2)
    (< (send ?i1 get-superficie) (send ?i2 get-superficie)))
 
-(defrule list "Imprimeix llista de habitatges"
+(defrule list "Imprimeix llista d'habitatges"
+    (children ?children)
+    (test (> ?children 1))
     =>
-    (bind ?instances (find-all-instances ((?i Habitatge)) TRUE))
+    (bind ?instances (find-all-instances ((?i Habitatge)) (> (send ?i get-dormitoris) 2)))
     (bind ?instances (sort superficie-sort ?instances))
     (progn$ (?i ?instances)
         (printout t (send ?i get-superficie) " " (send ?i get-preu) crlf)))
 
 
 
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defrule list2 "Imprimeix llista d'habitatges"
+    (children ?children)
+    (test (< ?children 3))
+    =>
+    (bind ?instances (find-all-instances ((?i Habitatge)) TRUE))
+    (bind ?instances (sort superficie-sort ?instances))
+    (progn$ (?i ?instances)
+        (printout t (send ?i get-superficie) " " (send ?i get-preu) crlf)))
 
 
 
@@ -553,9 +555,3 @@
 =>
         (printout t "Quins d'aquests barris de Barcelona t'agradaria viure?")
         (assert (neighborhood (read))))
-
-(defrule are-lights-working
-  (declare (salience 6))
-=>
-        (printout t "Are the car's lights working (yes or no)?")
-        (assert (lights-working (read))))
