@@ -318,7 +318,7 @@
 		    (create-accessor read-write))
 )
 
-(definstances instancies
+(definstances habitatges
 (Habitatge001 of Pis
     (AC TRUE)
     (superficie 45)
@@ -386,7 +386,7 @@
 
 
 (defrule initial "initial rule"
-	(TRUE)
+	(declare (salience 20))
 	=>
 	(printout t "--------------------------------------------------------------" crlf)
 	(printout t "--------------------------------------------------------------" crlf)
@@ -423,22 +423,24 @@
 
 
 (defrule printLARECOMANACIO
-  (initial-fact)
+  (declare (salience 1))
   =>
 	(printout t "--------------------------------------------------------------" crlf)
 	(printout t "-------------------- RESULTATS RECOMANACIO -------------------" crlf)
 	(printout t "--------------------------------------------------------------" crlf)
 	(printout t crlf)
 
-
-    ;...................
-
-	(printout t crlf "FIN" crlf crlf)
 )
 
+(deffunction superficie-sort (?i1 ?i2)
+   (< (send ?i1 get-superficie) (send ?i2 get-superficie)))
 
-
-
+(defrule list "Imprimeix llista de habitatges"
+    =>
+    (bind ?instances (find-all-instances ((?i Habitatge)) TRUE))
+    (bind ?instances (sort superficie-sort ?instances))
+    (progn$ (?i ?instances)
+        (printout t (send ?i get-superficie) " " (send ?i get-preu) crlf)))
 
 
 
@@ -447,34 +449,34 @@
 
 
 (defrule getEdat
-        (not (edat ?))
+  (declare (salience 2))
 =>
         (printout t "Quina es la seva edat?")
         (assert (edat (read))))
 
 (defrule getRelationship
-        (not (relationship ?))
+  (declare (salience 3))
 =>
         (if (binary-question "Tens parella?")
             then(assert (relationship te_parella))
             else (assert (relationship solter))))
         ;(printout t "Tens parella? (si/no/s/n) ")
         ;(assert (relationship (read)))))
-        
+
 (defrule getChildren
-        (not (children ?))
+  (declare (salience 4))
 =>
         (printout t "Quant fills tens?")
         (assert (children (read))))
 
 (defrule getNeighborhood
-        (not (Neighborhood ?))
+  (declare (salience 5))
 =>
         (printout t "Quins d'aquests barris de Barcelona t'agradaria viure?")
         (assert (neighborhood (read))))
 
 (defrule are-lights-working
-        (not (lights-working ?))
+  (declare (salience 6))
 =>
         (printout t "Are the car's lights working (yes or no)?")
         (assert (lights-working (read))))
