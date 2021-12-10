@@ -449,8 +449,29 @@
 (defrule getEdat
         (not (edat ?))
 =>
-        (printout t "Quina és la seva edat?")
+        (printout t "Quina es la seva edat?")
         (assert (edat (read))))
+
+(defrule getRelationship
+        (not (relationship ?))
+=>
+        (if (binary-question "Tens parella?")
+            then(assert (relationship te_parella))
+            else (assert (relationship solter))))
+        ;(printout t "Tens parella? (si/no/s/n) ")
+        ;(assert (relationship (read)))))
+        
+(defrule getChildren
+        (not (children ?))
+=>
+        (printout t "Quant fills tens?")
+        (assert (children (read))))
+
+(defrule getNeighborhood
+        (not (Neighborhood ?))
+=>
+        (printout t "Quins d'aquests barris de Barcelona t'agradaria viure?")
+        (assert (neighborhood (read))))
 
 (defrule are-lights-working
         (not (lights-working ?))
