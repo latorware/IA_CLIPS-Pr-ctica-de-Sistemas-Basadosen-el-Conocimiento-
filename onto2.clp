@@ -323,15 +323,94 @@
     (AC TRUE)
     (superficie 45)
     (preu 450)
+    (dormitoris 1)
 )
-
-
 (Habitatge002 of CasaIndividual
     (AC TRUE)
     (superficie 120)
     (numPisos 3)
-    (preu 980)
+    (preu 1450)
+    (dormitoris 3)
 )
+(Habitatge003 of Pis
+    (AC False)
+    (superficie 60)
+    (preu 550)
+    (dormitoris 1)
+)
+(Habitatge004 of Duplex
+    (AC True)
+    (superficie 95)
+    (preu 1000)
+    (dormitoris 3)
+)
+(Habitatge005 of Pis
+    (AC True)
+    (superficie 80)
+    (preu 900)
+    (dormitoris 1)
+)
+(Habitatge006 of Atic
+    (AC True)
+    (superficie 70)
+    (preu 1000)
+    (dormitoris 1)
+)
+(Habitatge007 of Xalet
+    (AC True)
+    (superficie 140)
+    (preu 1700)
+    (dormitoris 3)
+)
+(Habitatge008 of Pis
+    (AC False)
+    (superficie 50)
+    (preu 500)
+    (dormitoris 1)
+)
+(Habitatge009 of Apartament
+    (AC True)
+    (superficie 70)
+    (preu 900)
+    (dormitoris 1)
+)
+(Habitatge010 of Pis
+    (AC True)
+    (superficie 80)
+    (preu 800)
+    (dormitoris 3)
+)
+(Habitatge011 of Pis
+    (AC False)
+    (superficie 65)
+    (preu 650)
+    (dormitoris 1)
+)
+(Habitatge012 of Atic
+    (AC True)
+    (superficie 90)
+    (preu 1300)
+    (dormitoris 3)
+)
+(Habitatge013 of CasaIndividual
+    (AC True)
+    (superficie 100)
+    (preu 1200)
+    (dormitoris 3)
+)
+(Habitatge014 of CasaAdosada
+    (AC True)
+    (superficie 90)
+    (preu 1000)
+    (dormitoris 3)
+)
+(Habitatge015 of Pis
+    (AC True)
+    (superficie 85)
+    (preu 900)
+    (dormitoris 3)
+)
+
 )
 
 ;Preguntes
