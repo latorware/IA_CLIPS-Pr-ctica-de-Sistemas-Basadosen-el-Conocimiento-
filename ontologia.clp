@@ -75,10 +75,10 @@
         (type SYMBOL)
         (allowed-values Baix Mitja Alt)
         (create-accessor read-write))
-    (slot qualitatBarri
-        (type SYMBOL)
-        (allowed-values Baix Mitja Alt)
-        (create-accessor read-write))
+    ;(slot qualitatBarri                      AIXO VA A BARRI
+    ;    (type SYMBOL)
+    ;    (allowed-values Baix Mitja Alt)
+    ;    (create-accessor read-write))
     (slot localitzacioX
         (type FLOAT)
         (create-accessor read-write))
@@ -235,10 +235,14 @@
     (pattern-match reactive)
 )
 
+
 (defclass Barri
     (is-a USER)
     (role concrete)
     (pattern-match reactive)
+    (slot nom                   ;Necesari ja que li preguntarem a la persona pels barris pel nom
+		(type STRING)
+		(create-accessor read-write))
     (slot borderLeftX
         (type INTEGER)
         (create-accessor read-write))
@@ -251,12 +255,18 @@
     (slot borderUpY
         (type INTEGER)
         (create-accessor read-write))
+    (slot qualitatBarri    
+        (type SYMBOL)
+        (allowed-values Baix Mitja Alt)
+        (create-accessor read-write))
 )
 
 ;----------------------------------------------------------------
 ;Definició de Persona
 ;----------------------------------------------------------------
 
+
+;DE FET LA CLASE PERSONA NI ENS FA FALTA PODRIEM DIRECTAMENT CALCULAR LES COSES A LA VEGADA QUE FEM LES DEFFRULES
 (defclass Persona
     (is-a USER)
     (role concrete)
@@ -265,9 +275,9 @@
         (type SYMBOL)
         (allowed-values Baix Mitja Alt)
         (create-accessor read-write))
-    (slot sou
-        (type INTEGER)
-        (create-accessor read-write))
+    ;(slot sou                         No es necesari ja que ja hi ha poderAdquisitiu. aixi que li preguntem a la persona pel sou exacte, pero a la instancia de persona ja u fem abstracte amb PoderAquisitiu
+    ;    (type INTEGER)
+    ;    (create-accessor read-write))
     (slot parella
         (type SYMBOL)
         (allowed-values FALSE TRUE)
@@ -283,6 +293,14 @@
         (type INSTANCES)
         (allowed-values Barri)
         (create-accessor read-write))
+
+    ;ja que fem classe persona, llavors segons el que preguntem tambe haurem dafegir mes o menys slots
+
+    ;Per exemple si li preguntem si vol piscina o no, lllavors tambe hauriem de fer un slot prefereix_piscina type boolean
+
+    ;El mateix amb si vol o no parking
+
+    ;etcetera
 )
 
 
@@ -300,7 +318,125 @@
 		(create-accessor read-write))
 )
 
+
+;Preguntes 
+
+;- Quin sou tens? 
+
+;- Tens parella?
+
+;- Tens fills?
+
+;- Quina edat tens?
+
+;- Quins d'aquests barris de Barcelona t'agradaria viure (opcions)       opcions son els slots noms de tots els barris
+
+
+
+(deffunction general-question "function to ask general questions" (?pregunta) ;suposo que aquesta ja serveix per el que retorna int
+	(format t "%s" ?pregunta)
+	(bind ?respuesta (read))
+	?respuesta
+)
+
+
+(deffunction binary-question "function to ask questions with binary answers values" (?pregunta)
+	(format t "%s" ?pregunta)
+	(printout t " (si/no/s/n): ")
+	(bind ?respuesta (read))
+	(if (or (eq (str-compare (lowcase ?respuesta) si) 0) (eq (str-compare (lowcase ?respuesta) s) 0))
+		then (return TRUE)
+		else (return FALSE)
+	)
+)
+
+;MODULS:
+
+
+
+;MODUL MAIN
+
+
 (defmodule MAIN (export ?ALL))
+
+(defrule initial "initial rule"
+	(initial-fact)
+	=>
+	(printout t "--------------------------------------------------------------" crlf)
+	(printout t "--------------------------------------------------------------" crlf)
+	(printout t "------------ SISTEMA DE RECOMENDACION DE HABITATGES ----------" crlf)
+	(printout t "--------------------------------------------------------------" crlf)
+	(printout t "--------------------------------------------------------------" crlf)
+
+	(printout t crlf)
+	;Aqui I guess que hauriem de fer make instance de Persona. O potser si fem slot nom a Persona, llavors quan li preguntem pel nom fem el make
+)
+
+
+
+;MODUL QUESTIONS
+
+    ;aqui farem una defrule per pregunta
+    ;auriem danar especificant els atributs de la instancia de persona
+
+
+    (defmodule ask_questions
+	(import MAIN ?ALL)
+	(export ?ALL)
+)
+
+(defrule sou "regla per saber el sou que te la persona que sesta analitzant"
+    ;...
+)
+
+;...
+
+
+
+;RECOMENDATION MODUL
+
+(defmodule recommendation
+	(import MAIN ?ALL)
+	(import ask_questions ?ALL)
+	(export ?ALL)
+)
+
+        ;defruls per filtrar habitatges i altres merdes de defrules
+
+
+;PRINTING MODUL
+
+(defmodule printing
+	(import MAIN ?ALL)
+	(import ask_questions ?ALL)
+	(import recommendation ?ALL)
+	(export ?ALL)
+)
+
+
+(defrule printLARECOMANACIO
+
+
+	(printout t "--------------------------------------------------------------" crlf)
+	(printout t "-------------------- RESULTATS RECOMANACIO -------------------" crlf)
+	(printout t "--------------------------------------------------------------" crlf)
+	(printout t crlf)
+
+
+    ;...................
+
+	(printout t crlf "FIN" crlf crlf)
+	(exit)
+)
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (defmodule recopilacion-grupo
 	(import MAIN ?ALL)
@@ -313,3 +449,7 @@
 =>
         (printout t "Are the car's lights working (yes or no)?")
         (assert (lights-working (read))))
+
+
+
+
