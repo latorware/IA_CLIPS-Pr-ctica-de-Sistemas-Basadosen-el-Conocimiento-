@@ -435,7 +435,7 @@
 
 (deffunction binary-question "function to ask questions with binary answers values" (?pregunta)
 	(format t "%s" ?pregunta)
-	(printout t " (si/no/s/n): ")
+	(printout t " (si/no/s/n): " crlf)
 	(bind ?respuesta (read))
 	(if (or (eq (str-compare (lowcase ?respuesta) si) 0) (eq (str-compare (lowcase ?respuesta) s) 0))
 		then (return TRUE)
@@ -445,6 +445,22 @@
 
 ;MODULS:
 
+(deftemplate dadesPersona
+  (slot poder_adquisitiu
+      (type SYMBOL)
+      (allowed-values Baix Mitja Alt))
+  (slot parella
+      (type SYMBOL)
+      (allowed-values FALSE TRUE))
+  (slot edat
+      (type SYMBOL)
+      (allowed-values jove mitjana_edat gran molt_gran))
+  (slot fills
+      (type SYMBOL)
+      (allowed-values sense_fills fill_unic dos_fills familia_nombrosa))
+  (multislot zones_preferides
+      (type SYMBOL))
+)
 
 
 ;MODUL MAIN
@@ -460,7 +476,7 @@
 	(printout t "------------ SISTEMA DE RECOMENDACION DE HABITATGES ----------" crlf)
 	(printout t "--------------------------------------------------------------" crlf)
 	(printout t "--------------------------------------------------------------" crlf)
-
+  (assert (dadesPersona))
 	(printout t crlf)
 	;Aqui I guess que hauriem de fer make instance de Persona. O potser si fem slot nom a Persona, llavors quan li preguntem pel nom fem el make
 )
@@ -530,28 +546,114 @@
 
 
 (defrule getEdat
-  (declare (salience 2))
-=>
-        (printout t "Quina es la seva edat?")
-        (assert (edat (read))))
-
-(defrule getRelationship
-  (declare (salience 3))
-=>
-        (if (binary-question "Tens parella?")
-            then(assert (relationship te_parella))
-            else (assert (relationship solter))))
-        ;(printout t "Tens parella? (si/no/s/n) ")
-        ;(assert (relationship (read)))))
-
-(defrule getChildren
-  (declare (salience 4))
-=>
-        (printout t "Quant fills tens?")
-        (assert (children (read))))
-
-(defrule getNeighborhood
   (declare (salience 5))
 =>
-        (printout t "Quins d'aquests barris de Barcelona t'agradaria viure?")
-        (assert (neighborhood (read))))
+        (printout t "Quina es la seva edat?" crlf)
+        (bind ?edat (read))
+        (if (< ?edat 30) then
+          (bind ?var jove)
+          else (if (< ?edat 50) then
+            (bind ?var mitjana_edat)
+            else (if (< ?edat 80) then
+              (bind ?var gran)
+              else (bind ?var molt_gran)
+            )
+          )
+        )
+        (assert (edat ?var)))
+
+(defrule getRelacions
+    (declare (salience 4))
+    =>
+    (if (binary-question "Tens parella?")
+        then(assert (relacio te_parella))
+        else (assert (relacio solter)))
+    )
+
+(defrule getFills
+    (declare (salience 3))
+    =>
+    (printout t "Quant fills tens?" crlf)
+    (bind ?fills (read))
+    (switch ?fills
+        (case 0 then (assert (fills sense_fills)))
+        (case 1 then (assert (fills fill_unic)))
+        (case 2 then (assert (fills dos_fills)))
+        (default (assert (fills familia_nombrosa)))
+    )
+)
+
+(defrule getBarris
+    (declare (salience 2))
+    ?dades <- (dadesPersona (zones_preferides $?z))
+    =>
+    (printout t "Quines zones de Barcelona t'agraden més?" crlf)
+    (printout t "Escriu els números separats per espais 0 1 2 3, no importa l'ordre" crlf)
+    (printout t "1. Ciutat Vella" crlf)
+    (printout t "2. Eixample" crlf)
+    (printout t "3. Sants-Montjuic" crlf)
+    (printout t "4. Les Corts" crlf)
+    (printout t "5. Sarrià - Sant Gervàsi" crlf)
+    (printout t "6. Gràcia" crlf)
+    (printout t "7. Horta - Guinardó" crlf)
+    (printout t "8. Nous Barris" crlf)
+    (printout t "9. Sant Andreu" crlf)
+    (printout t "10. Sant Martí" crlf)
+
+    (bind ?zones (readline))
+    (bind ?zones (explode$ ?zones))
+    (progn$ (?zona ?zones)
+        (switch ?zona
+            (case 1 then (modify ?dades (zones_preferides ?z CV)))
+            (case 2 then (modify ?dades (zones_preferides ?z E)))
+            (case 3 then (modify ?dades (zones_preferides ?z SAM)))
+            (case 4 then (modify ?dades (zones_preferides ?z LC)))
+            (case 5 then (modify ?dades (zones_preferides ?z SSG)))
+            (case 6 then (modify ?dades (zones_preferides ?z G)))
+            (case 7 then (modify ?dades (zones_preferides ?z HG)))
+            (case 8 then (modify ?dades (zones_preferides ?z NB)))
+            (case 9 then (modify ?dades (zones_preferides ?z SA)))
+            (case 10 then (modify ?dades (zones_preferides ?z SM)))
+        )
+    )
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;
