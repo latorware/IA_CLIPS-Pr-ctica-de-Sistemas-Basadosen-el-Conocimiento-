@@ -6,24 +6,6 @@
 
 ; Definició de la classe Habitatge i totes les seves característiques
 
-
-
-(defclass Habitatge
-    (is-a USER)
-    (role abstract)
-    (pattern-match reactive)
-    (slot concret
-        (type HabitatgeCONCRET)
-        (create-accessor read-write)
-    )
-    (slot abstracte
-        (type HabitatgeABSTRACTE)
-        (create-accessor read-write)
-    )
-
-)
-
-
 (defclass HabitatgeABSTRACTE
     (is-a USER)
     (role abstract)
@@ -50,6 +32,81 @@
     )
     (slot barri
         (type Barri)
+        (create-accessor read-write)
+    )
+    (slot AC
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot calefaccio
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot obraNova
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot parking
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot piscinaIndividual
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot piscinaComunitaria
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot terrassa
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot jardí
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot xemeneia
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot vistes
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot amoblat
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot mascotesPermeses
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot qualitatDelsAcabats
+        (type SYMBOL)
+        (allowed-values Baix Mitja Alt)
+        (create-accessor read-write)
+    )
+    (slot tipus
+        (type SYMBOL)
+        (allowed-values Pis Duplex Atic Apartament Unifamiliar CasaIndividual CasaAdosada Xalet)
+        (create-accessor read-write)
+    )
+    (slot altura
+        (type SYMBOL)
+        (allowed-values PlantaBaixa baixa alta)
         (create-accessor read-write)
     )
 )
@@ -124,12 +181,10 @@
         (type SYMBOL)
         (allowed-values Baix Mitja Alt)
         (create-accessor read-write))
-    (slot localitzacioX
-        (type FLOAT)
-        (create-accessor read-write))
-    (slot localitzacioY
-        (type FLOAT)
-        (create-accessor read-write))
+    (slot nomBarri
+        (type STRING)
+        (create-accessor read-write)
+    )
 )
 
 (defclass Pis
@@ -193,51 +248,18 @@
 ;----------------------------------------------------------------
 
 
-
 (defclass Servei
-    (is-a USER)
-    (role abstract)
-    (pattern-match reactive)
-    (slot concret
-        (type ServeiCONCRET)
-        (create-accessor read-write)
-    )
-    (slot abstracte
-        (type ServeiABSTRACTE)
-        (create-accessor read-write)
-    )
-
-)
-
-
-
-(defclass ServeiABSTRACTE
-    (is-a USER)
-    (role abstract)
-    (pattern-match reactive)
-    (slot barri
-        (type Barri)
-        (create-accessor read-write)
-    )
-
-)
-
-
-
-(defclass ServeiCONCRET
     (is-a USER)
     (role concrete)
     (pattern-match reactive)
-    (slot localitzacioX
-        (type FLOAT)
-        (create-accessor read-write))
-    (slot localitzacioY
-        (type FLOAT)
-        (create-accessor read-write))
+    (slot nomBarri
+        (type STRING)
+        (create-accessor read-write)
+    )
 )
 
 (defclass Supermercat
-    (is-a ServeiCONCRET)
+    (is-a Servei)
     (role concrete)
     (pattern-match reactive)
     (slot grandaria
@@ -247,49 +269,49 @@
 )
 
 (defclass Mercat
-    (is-a ServeiCONCRET)
+    (is-a Servei)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass Parc
-    (is-a ServeiCONCRET)
+    (is-a Servei)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass CentreEsportiu
-    (is-a ServeiCONCRET)
+    (is-a Servei)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass Gimnas
-    (is-a ServeiCONCRET)
+    (is-a Servei)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass TransportPublic
-    (is-a ServeiCONCRET)
+    (is-a Servei)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass CentreSalut
-    (is-a ServeiCONCRET)
+    (is-a Servei)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass Escola
-    (is-a ServeiCONCRET)
+    (is-a Servei)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass Oci
-    (is-a ServeiCONCRET)
+    (is-a Servei)
     (role concrete)
     (pattern-match reactive)
 )
@@ -311,24 +333,6 @@
     (role concrete)
     (pattern-match reactive)
 )
-
-
-
-
-(defclass Barri 
-    (is-a USER)
-    (role abstract)
-    (pattern-match reactive)
-    (slot concret
-        (type BarriCONCRET)
-        (create-accessor read-write)
-    )
-    (slot abstracte
-        (type BarriABSTRACTE)
-        (create-accessor read-write)
-    )
-)
-
 
 
 
@@ -356,6 +360,10 @@
         (allowed-values pobre-mitjana-rica)
         (create-accessor read-write)
     )
+    (slot nom
+        (type STRING)
+        (create-accessor read.write)
+    )
 )
 
 
@@ -368,25 +376,9 @@
     (slot nom                   ;Necesari ja que li preguntarem a la persona pels barris pel nom
 		(type STRING)
 		(create-accessor read-write))
-    (slot borderLeftX
-        (type INTEGER)
-        (create-accessor read-write))
-    (slot borderRightX
-        (type INTEGER)
-        (create-accessor read-write))
-    (slot borderBottomY
-        (type INTEGER)
-        (create-accessor read-write))
-    (slot borderUpY
-        (type INTEGER)
-        (create-accessor read-write))
     (slot souMitja
         (type INTEGER)
         (create-accessor read-write))
-    (slot poblacio 
-        (type INTEGER)
-        (create-accessor read-write)
-    )
 )
 
 ;----------------------------------------------------------------
