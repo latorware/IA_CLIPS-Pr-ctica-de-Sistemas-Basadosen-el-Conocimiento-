@@ -711,12 +711,11 @@
     )
 )
 
-(defrule getBarris
-    (declare (salience 2))
-    ?dades <- (dadesPersona (zones_preferides $?z))
+(defrule get_barris
+    (declare (salience 4))
     =>
     (printout t "Quines zones de Barcelona t'agraden més?" crlf)
-    (printout t "Escriu els números separats per espais 0 1 2 3, no importa l'ordre" crlf)
+    (printout t "Escriu els números separats per espais 1 2 3, no importa l'ordre, o 0 si no tens cap preferencia" crlf)
     (printout t "1. Ciutat Vella" crlf)
     (printout t "2. Eixample" crlf)
     (printout t "3. Sants-Montjuic" crlf)
@@ -727,24 +726,36 @@
     (printout t "8. Nous Barris" crlf)
     (printout t "9. Sant Andreu" crlf)
     (printout t "10. Sant Martí" crlf)
- 
+
     (bind ?zones (readline))
     (bind ?zones (explode$ ?zones))
+    (bind $?dades (create$))
     (progn$ (?zona ?zones)
         (switch ?zona
-            (case 1 then (modify ?dades (zones_preferides ?z CV)))
-            (case 2 then (modify ?dades (zones_preferides ?z E)))
-            (case 3 then (modify ?dades (zones_preferides ?z SAM)))
-            (case 4 then (modify ?dades (zones_preferides ?z LC)))
-            (case 5 then (modify ?dades (zones_preferides ?z SSG)))
-            (case 6 then (modify ?dades (zones_preferides ?z G)))
-            (case 7 then (modify ?dades (zones_preferides ?z HG)))
-            (case 8 then (modify ?dades (zones_preferides ?z NB)))
-            (case 9 then (modify ?dades (zones_preferides ?z SA)))
-            (case 10 then (modify ?dades (zones_preferides ?z SM)))
+            (case 1 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) CV)))
+            (case 2 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) E)))
+            (case 3 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) SAM)))
+            (case 4 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) LC)))
+            (case 5 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) SSG)))
+            (case 6 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) G)))
+            (case 7 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) HG)))
+            (case 8 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) NB)))
+            (case 9 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) SA)))
+            (case 10 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) SM)))
         )
+        (modify 1(zones_preferides ?dades))
     )
 )
+
+(defrule get_cotxe
+    (declare (salience 3))
+    =>
+    (if (binary-question "Tens cotxe?")
+        then (modify 1(te_cotxe TRUE))
+        else (modify 1(te_cotxe FALSE)))
+)
+
+
 
 
 
