@@ -6,7 +6,56 @@
 
 ; Definició de la classe Habitatge i totes les seves característiques
 
+
+
 (defclass Habitatge
+    (is-a USER)
+    (role abstract)
+    (pattern-match reactive)
+    (slot concret
+        (type HabitatgeCONCRET)
+        (create-accessor read-write)
+    )
+    (slot abstracte
+        (type HabitatgeABSTRACTE)
+        (create-accessor read-write)
+    )
+
+)
+
+
+(defclass HabitatgeABSTRACTE
+    (is-a USER)
+    (role abstract)
+    (pattern-match reactive)
+    (slot esFamiliar
+        (type SYMBOL)
+        (allowed-values noFills unFillMax, dosFillsMax, MoltsFills)
+        (create-accessor read-write)
+    )
+    (slot cost
+        (type SYMBOL)
+        (allowed-values moltBaix baix normal alt moltAlt)
+        (create-accessor read-write)
+    )
+    (slot grandaria
+        (type SYMBOL)
+        (allowed-values moltPetit petit normal gran moltGran)
+        (create-accessor read-write)
+    )
+    (slot compatiblePersonesMajors   ;;dependra de ascensor, de si barriABSTRACTE es per a personesgrans
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot barri
+        (type Barri)
+        (create-accessor read-write)
+    )
+)
+
+
+(defclass HabitatgeCONCRET
     (is-a USER)
     (role concrete)
     (pattern-match reactive)
@@ -75,10 +124,6 @@
         (type SYMBOL)
         (allowed-values Baix Mitja Alt)
         (create-accessor read-write))
-    ;(slot qualitatBarri                      AIXO VA A BARRI
-    ;    (type SYMBOL)
-    ;    (allowed-values Baix Mitja Alt)
-    ;    (create-accessor read-write))
     (slot localitzacioX
         (type FLOAT)
         (create-accessor read-write))
@@ -88,7 +133,7 @@
 )
 
 (defclass Pis
-    (is-a Habitatge)
+    (is-a HabitatgeCONCRET)
     (role concrete)
     (pattern-match reactive)
     (slot planta
@@ -118,7 +163,7 @@
 )
 
 (defclass Unifamiliar
-    (is-a Habitatge)
+    (is-a HabitatgeCONCRET)
     (role concrete)
     (pattern-match reactive)
     (slot numPisos
@@ -147,7 +192,39 @@
 ;Definició dels Serveis
 ;----------------------------------------------------------------
 
+
+
 (defclass Servei
+    (is-a USER)
+    (role abstract)
+    (pattern-match reactive)
+    (slot concret
+        (type ServeiCONCRET)
+        (create-accessor read-write)
+    )
+    (slot abstracte
+        (type ServeiABSTRACTE)
+        (create-accessor read-write)
+    )
+
+)
+
+
+
+(defclass ServeiABSTRACTE
+    (is-a USER)
+    (role abstract)
+    (pattern-match reactive)
+    (slot barri
+        (type Barri)
+        (create-accessor read-write)
+    )
+
+)
+
+
+
+(defclass ServeiCONCRET
     (is-a USER)
     (role concrete)
     (pattern-match reactive)
@@ -160,7 +237,7 @@
 )
 
 (defclass Supermercat
-    (is-a Servei)
+    (is-a ServeiCONCRET)
     (role concrete)
     (pattern-match reactive)
     (slot grandaria
@@ -170,49 +247,49 @@
 )
 
 (defclass Mercat
-    (is-a Servei)
+    (is-a ServeiCONCRET)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass Parc
-    (is-a Servei)
+    (is-a ServeiCONCRET)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass CentreEsportiu
-    (is-a Servei)
+    (is-a ServeiCONCRET)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass Gimnas
-    (is-a Servei)
+    (is-a ServeiCONCRET)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass TransportPublic
-    (is-a Servei)
+    (is-a ServeiCONCRET)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass CentreSalut
-    (is-a Servei)
+    (is-a ServeiCONCRET)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass Escola
-    (is-a Servei)
+    (is-a ServeiCONCRET)
     (role concrete)
     (pattern-match reactive)
 )
 
 (defclass Oci
-    (is-a Servei)
+    (is-a ServeiCONCRET)
     (role concrete)
     (pattern-match reactive)
 )
@@ -236,7 +313,55 @@
 )
 
 
-(defclass Barri
+
+
+(defclass Barri 
+    (is-a USER)
+    (role abstract)
+    (pattern-match reactive)
+    (slot concret
+        (type BarriCONCRET)
+        (create-accessor read-write)
+    )
+    (slot abstracte
+        (type BarriABSTRACTE)
+        (create-accessor read-write)
+    )
+)
+
+
+
+
+(defclass BarriABSTRACTE
+    (is-a USER)
+    (role abstract)
+    (pattern-match reactive)
+    (slot compatiblePersonesMajors
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot compatiblePersonesEstudiants
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot compatibleNens
+        (type SYMBOL)
+        (allowed-values FALSE TRUE)
+        (create-accessor read-write)
+    )
+    (slot riquesaBarri
+        (type SYMBOL)
+        (allowed-values pobre-mitjana-rica)
+        (create-accessor read-write)
+    )
+)
+
+
+
+
+(defclass BarriCONCRET
     (is-a USER)
     (role concrete)
     (pattern-match reactive)
@@ -255,10 +380,13 @@
     (slot borderUpY
         (type INTEGER)
         (create-accessor read-write))
-    (slot qualitatBarri
-        (type SYMBOL)
-        (allowed-values Baix Mitja Alt)
+    (slot souMitja
+        (type INTEGER)
         (create-accessor read-write))
+    (slot poblacio 
+        (type INTEGER)
+        (create-accessor read-write)
+    )
 )
 
 ;----------------------------------------------------------------
@@ -599,7 +727,7 @@
     (printout t "8. Nous Barris" crlf)
     (printout t "9. Sant Andreu" crlf)
     (printout t "10. Sant Martí" crlf)
-
+ 
     (bind ?zones (readline))
     (bind ?zones (explode$ ?zones))
     (progn$ (?zona ?zones)
