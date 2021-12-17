@@ -408,94 +408,25 @@
 (definstances habitatges
 (Habitatge001 of Pis
     (AC TRUE)
-    (superficie 45)
-    (preu 450)
-    (dormitoris 1)
-)
-(Habitatge002 of CasaIndividual
-    (AC TRUE)
-    (superficie 120)
-    (numPisos 3)
-    (preu 1450)
-    (dormitoris 3)
-)
-(Habitatge003 of Pis
-    (AC False)
-    (superficie 60)
-    (preu 550)
-    (dormitoris 1)
-)
-(Habitatge004 of Duplex
-    (AC True)
-    (superficie 95)
-    (preu 1000)
-    (dormitoris 3)
-)
-(Habitatge005 of Pis
-    (AC True)
-    (superficie 80)
-    (preu 900)
-    (dormitoris 1)
-)
-(Habitatge006 of Atic
-    (AC True)
+    (calefaccio FALSE)
+    (obraNova FALSE)
+    (parking FALSE)
+    (piscinaIndividual FALSE)
+    (piscinaComunitaria FALSE)
+    (terrassa FALSE)
+    (jardi FALSE)
+    (ascensor FALSE)
+    (xemeneia FALSE)
+    (vistes FALSE)
+    (amoblat FALSE)
+    (mascotesPermeses FALSE)
+    (dormitoris 2)
+    (preu 2000)
     (superficie 70)
-    (preu 1000)
-    (dormitoris 1)
-)
-(Habitatge007 of Xalet
-    (AC True)
-    (superficie 140)
-    (preu 1700)
-    (dormitoris 3)
-)
-(Habitatge008 of Pis
-    (AC False)
-    (superficie 50)
-    (preu 500)
-    (dormitoris 1)
-)
-(Habitatge009 of Apartament
-    (AC True)
-    (superficie 70)
-    (preu 900)
-    (dormitoris 1)
-)
-(Habitatge010 of Pis
-    (AC True)
-    (superficie 80)
-    (preu 800)
-    (dormitoris 3)
-)
-(Habitatge011 of Pis
-    (AC False)
-    (superficie 65)
-    (preu 650)
-    (dormitoris 1)
-)
-(Habitatge012 of Atic
-    (AC True)
-    (superficie 90)
-    (preu 1300)
-    (dormitoris 3)
-)
-(Habitatge013 of CasaIndividual
-    (AC True)
-    (superficie 100)
-    (preu 1200)
-    (dormitoris 3)
-)
-(Habitatge014 of CasaAdosada
-    (AC True)
-    (superficie 90)
-    (preu 1000)
-    (dormitoris 3)
-)
-(Habitatge015 of Pis
-    (AC True)
-    (superficie 85)
-    (preu 900)
-    (dormitoris 3)
+    (qualitatDelsAcabats Baix)
+    (nomBarri SA)
+    (planta 10)
+    (alturaPis 2)
 )
 )
 
@@ -595,53 +526,13 @@
 ;RECOMENDATION MODUL
 
 
-
-(defrule printLARECOMANACIO
-  (declare (salience 1))
-  =>
-	(printout t "--------------------------------------------------------------" crlf)
-	(printout t "-------------------- RESULTATS RECOMANACIO -------------------" crlf)
-	(printout t "--------------------------------------------------------------" crlf)
-	(printout t crlf)
-
-)
-
-(deffunction superficie-sort (?i1 ?i2)
-   (< (send ?i1 get-superficie) (send ?i2 get-superficie)))
-
-(defrule list "Imprimeix llista d'habitatges"
-    (children ?children)
-    (test (> ?children 1))
-    =>
-    (bind ?instances (find-all-instances ((?i HabitatgeCONCRET)) (> (send ?i get-dormitoris) 2)))
-    (bind ?instances (sort superficie-sort ?instances))
-    (progn$ (?i ?instances)
-        (printout t (send ?i get-superficie) " " (send ?i get-preu) crlf)))
-
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defrule list2 "Imprimeix llista d'habitatges"
-    (children ?children)
-    (test (< ?children 3))
-    =>
-    (bind ?instances (find-all-instances ((?i HabitatgeCONCRET)) TRUE))
-    (bind ?instances (sort superficie-sort ?instances))
-    (progn$ (?i ?instances)
-        (printout t (send ?i get-superficie) " " (send ?i get-preu) crlf)))
-
-
 (deffunction converteixEsFamiliar (?dormitoris ?grandaria)
     (switch ?dormitoris
         (case 1 then noFills)
-        (case 2 then (if (> ?grandaria 60) 
+        (case 2 then (if (> ?grandaria 60)
                         then dosFillsMax
                         else unFillMax))
-        (case 3 then (if (> ?grandaria 100) 
+        (case 3 then (if (> ?grandaria 100)
                         then tresFillsMax
                         else dosFillsMax))
         (default moltsFills)
@@ -664,7 +555,7 @@
 )
 
 (deffunction converteixSuperficieAGrandaria (?superficie)
-    (if (<= ?superficie 40) then 
+    (if (<= ?superficie 40) then
         (bind ?var moltPetit)
         else (if (< ?superficie 70) then
             (bind ?var petit)
@@ -672,7 +563,7 @@
                 (bind ?var normal)
                 else (bind ?var gran)
             )
-   
+
         )
     )
     ?var
@@ -693,17 +584,16 @@
     ?var
 )
 
-(defrule creaHabitatgesAbstractes 
+(defrule creaHabitatgesAbstractes
     (declare (salience 19))
      =>
-    (bind ?instances (find-all-instances ((?i HabitatgeCONCRET)))(TRUE))
-    (bind ?)
+    (bind ?instances (find-all-instances ((?i HabitatgeCONCRET)) TRUE))
     (progn$ (?i ?instances)
         (bind ?atributEsFamiliar (converteixEsFamiliar (send ?i get-dormitoris) (send ?i get-superficie) ))
         (bind ?atributCost (converteixSouCost (send ?i get-preu)))
         (bind ?atributGrandaria (converteixSuperficieAGrandaria (send ?i get-superficie))
         (bind ?atributHabitatge (converteixSubclasseATipusHabitatge (type ?i)))
-        (if (= (type ?i) Pis) 
+        (if (= (str-compare (type ?i) Pis) 0)
             then (bind ?atributPlanta (converteixAlturaplanta (send ?i get-planta)) )
             else (bind ?atributPlanta -1)
         )
@@ -734,179 +624,6 @@
     )
 
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(defrule getEdat
-  (declare (salience 5))
-=>
-        (printout t "Quina es la seva edat?" crlf)
-        (bind ?edat (read))
-        (if (< ?edat 30) then
-          (bind ?var jove)
-          else (if (< ?edat 50) then
-            (bind ?var mitjana_edat)
-            else (if (< ?edat 80) then
-              (bind ?var gran)
-              else (bind ?var molt_gran)
-            )
-          )
-        )
-        (assert (edat ?var)))
-
-(defrule getRelacions
-    (declare (salience 4))
-    =>
-    (if (binary-question "Tens parella?")
-        then(assert (relacio te_parella))
-        else (assert (relacio solter)))
-    )
-
-(defrule getFills
-    (declare (salience 3))
-    =>
-    (printout t "Quant fills tens?" crlf)
-    (bind ?fills (read))
-    (switch ?fills
-        (case 0 then (assert (fills sense_fills)))
-        (case 1 then (assert (fills fill_unic)))
-        (case 2 then (assert (fills dos_fills)))
-        (default (assert (fills familia_nombrosa)))
-    )
-)
-
-(defrule get_barris
-    (declare (salience 4))
-    =>
-    (printout t "Quines zones de Barcelona t'agraden més?" crlf)
-    (printout t "Escriu els números separats per espais 1 2 3, no importa l'ordre, o 0 si no tens cap preferencia" crlf)
-    (printout t "1. Ciutat Vella" crlf)
-    (printout t "2. Eixample" crlf)
-    (printout t "3. Sants-Montjuic" crlf)
-    (printout t "4. Les Corts" crlf)
-    (printout t "5. Sarrià - Sant Gervàsi" crlf)
-    (printout t "6. Gràcia" crlf)
-    (printout t "7. Horta - Guinardó" crlf)
-    (printout t "8. Nous Barris" crlf)
-    (printout t "9. Sant Andreu" crlf)
-    (printout t "10. Sant Martí" crlf)
-
-    (bind ?zones (readline))
-    (bind ?zones (explode$ ?zones))
-    (bind $?dades (create$))
-    (progn$ (?zona ?zones)
-        (switch ?zona
-            (case 1 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) CV)))
-            (case 2 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) E)))
-            (case 3 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) SAM)))
-            (case 4 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) LC)))
-            (case 5 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) SSG)))
-            (case 6 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) G)))
-            (case 7 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) HG)))
-            (case 8 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) NB)))
-            (case 9 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) SA)))
-            (case 10 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) SM)))
-        )
-        (modify 1(zones_preferides ?dades))
-    )
-)
-
-(defrule get_cotxe
-    (declare (salience 3))
-    =>
-    (if (binary-question "Tens cotxe?")
-        then (modify 1(te_cotxe TRUE))
-        else (modify 1(te_cotxe FALSE)))
-)
-
-(defrule get_mascotes
-    (declare (salience 3))
-    =>
-    (if (binary-question "Tens mascotes?")
-        then (modify 1(te_mascota TRUE)
-        else(modify 1)(te_mascota FALSE)))
-)
-
-(defrule get_tipusVivenda
-   (declare (salience 3))
-    =>
-    (printout t "Què prefereixes una casa o un pis?" crlf)
-    (printout t "Escriu 1 si prefereixes una casa, 2 si prefereixes un pis" crlf) 
-    (printout t "1. Casa" crlf)
-    (printout t "2. Pis" crlf)
-    (bind ?tipus (readline))
-     (switch ?tipus
-            (case 1 then (modify 1(tipusVivenda casa)))
-            (case 2 then (modify 1(tipusVivenda pis)))
-    ))
-
-(defrule get_mobilitatReduida
-    (declare (salience 3))
-    =>
-    (if (binary-question "Tens o hi ha algun acompanyant que tingui mobilitat reduida?")
-        then (modify 1(mobilitatReduida TRUE)
-        else(modify 1)(mobilitatReduida FALSE))))
-
-(defrule get_serveisPreferits
-    (declare (salience 4))
-    =>
-    (printout t "Quins tipus serveis voldries tenir més a prop?" crlf)
-    (printout t "Escriu els números separats per espais 1 2 3, no importa l'ordre, o 0 si no tens cap preferencia" crlf)
-    (printout t "1. Supermercat" crlf)
-    (printout t "2. Mercat" crlf)
-    (printout t "3. Parc" crlf)
-    (printout t "4. CentreEsportiu" crlf)
-    (printout t "5. Gimnas" crlf)
-    (printout t "6. TransporPublic" crlf)
-    (printout t "7. CentreSalut" crlf)
-    (printout t "8. Escola" crlf)
-    (printout t "9. Oci" crlf)
-
-    (bind ?serveis (readline))
-    (bind ?serveis (explode$ ?serveis))
-    (bind $?dades (create$))
-    (progn$ (?serv ?serveis)
-        (switch ?zona
-            (case 1 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Supermercat)))
-            (case 2 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Mercat)))
-            (case 3 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Parc)))
-            (case 4 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) CentreEsportiu)))
-            (case 5 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Gimnas)))
-            (case 6 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) TransporPublic)))
-            (case 7 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) CentreSalut)))
-            (case 8 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Escola)))
-            (case 9 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Oci)))
-        )
-        (modify 1(serveis_preferits ?dades))
-    )
-)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
