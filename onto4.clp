@@ -22,12 +22,12 @@
     )
     (slot esFamiliar
         (type SYMBOL)
-        (allowed-values noFills unFillMax dosFillsMax tresFillsMax MoltsFills)
+        (allowed-values noFills unFillMax dosFillsMax tresFillsMax moltsFills)
         (create-accessor read-write)
     )
     (slot cost
         (type SYMBOL)
-        (allowed-values baix normal alt moltAlt)
+        (allowed-values baix normal alt molt_alt)
         (create-accessor read-write)
     )
     (slot grandaria
@@ -449,7 +449,7 @@
       (allowed-values jove mitjana_edat gran molt_gran))
     (slot fills
       (type SYMBOL)
-      (allowed-values noFills unFillMax dosFillsMax tresFillsMax MoltsFills))
+      (allowed-values noFills unFillMax dosFillsMax tresFillsMax moltsFills))
     (multislot zones_preferides
       (type SYMBOL))
     (slot te_cotxe
@@ -488,8 +488,10 @@
         (type INSTANCE))
     (slot puntuacio
         (type INTEGER))
-    (multislot justificacions
+    (multislot justificacionsBones
 		(type STRING))
+    (multislot justificacionsDolentes
+        (type STRING))
 )
 
 
@@ -539,7 +541,7 @@
     (if (<= ?salari 1500) then
         (bind ?var baix)
         else (if (< ?salari 3200)
-            then (bind ?var mitja)
+            then (bind ?var normal)
             else if (< ?salari 5500)
                 then (bind ?var alt)
                 else (bind ?var molt_alt)
@@ -584,7 +586,7 @@
         (case 1 then (modify 1(fills unFillMax)))
         (case 2 then (modify 1(fills dosFillsMax)))
         (case 3 then (modify 1(fills tresFillsMax)))
-        (default (modify 1(fills MoltsFills)))
+        (default (modify 1(fills moltsFills)))
     )
 )
 
@@ -748,7 +750,6 @@
     )
 )
 
-
 (deffunction converteixSouCost (?preu)
     (if (<= ?preu 700) then
         (bind ?var baix)
@@ -808,7 +809,7 @@
         )
 
 
-        (make-instance (send ?i get-nomCarrer) of HabitatgeABSTRACTE
+        (bind ?instance (make-instance (send ?i get-nomCarrer) of HabitatgeABSTRACTE
         (esFamiliar ?atributEsFamiliar)
         (cost ?atributCost)
         (grandaria ?atributGrandaria)
@@ -829,7 +830,8 @@
         (xemeneia (send ?i get-xemeneia))
         (mascotesPermeses (send ?i get-mascotesPermeses))
         (qualitatDelsAcabats (send ?i get-qualitatDelsAcabats))
-        )
+        ))
+        (assert (Recomanacio (Habitatge ?instance)))
     )
 )
 
@@ -864,7 +866,7 @@
 
 )
 
-(deffunction esCompatiblePersonesEstudiants (?nomDelBarri) ;;universitat
+(deffunction esCompatiblePersonesEstudiants (?nomDelBarri)
     (bind ?instances (find-all-instances ((?i Servei)) (= (str-compare (send ?i get-nomBarri) ?nomDelBarri) 0) ))
     (bind ?countUniversistat 0)
     (bind ?result FALSE)
@@ -882,8 +884,6 @@
     )
 
     ?result
-
-
 )
 
 (deffunction esCompatibleNens (?nomDelBarri) ;;parc tambe escola
@@ -941,7 +941,6 @@
         (riquesaBarri ?atributRiquesa)
         (nom (send ?i get-nom))
         )
-
     )
 )
 
@@ -978,54 +977,243 @@
     )
 )
 
-(defrule creaSolucioAbstracte ;;crea fets recomanacio
-    (declare (salience 5))
-    ?dades <- (dadesPersona (poder_adquisitiu ?poder_adquisitiu) (parella ?parella)
-    (edat ?edat) (fills ?fills) (te_cotxe ?te_cotxe) (te_mascota ?te_mascota)
-    (mobilitatReduida ?mobilitatReduida) (zona_on_treballa ?zona_on_treballa))
+
+(defrule filtraPerRiquesa
+    (declare (salience -1))
+    ?recomanacio <- (Recomanacio (Habitatge ?instance))
+    ?dades <- (dadesPersona (poder_adquisitiu ?poder_adquisitiu_persona))
+    ;(test (not (eq (send ?instance get-cost) ?poder_adquisitiu_persona)))
     =>
-    ;; Aqui si tenim temps podem fer que si és menys preu també ens serveixi
-    (bind ?instances (find-all-instances ((?i HabitatgeABSTRACTE)) TRUE))
-
-    (bind $?ins (create$))
-    (progn$ (?i ?instances)
-        (if (= (str-compare (send ?i get-cost) ?poder_adquisitiu) 0)
-            then (bind ?ins (insert$ ?ins (+ (length$ ?ins) 1) ?i))
-        )
-        (if (and (eq ?edat jove) (consultaCompatibilitatBarriJoves (send ?i get-nomBarri)))
-            then (bind ?ins (insert$ ?ins (+ (length$ ?ins) 1) ?i))
-        )
-        (if (and (eq ?te_mascota TRUE) (eq (send ?i get-mascotesPermeses) TRUE))
-            then (bind ?ins (insert$ ?ins (+ (length$ ?ins) 1) ?i))
-        )
+    (if (or (and (eq ?poder_adquisitiu_persona baix) (not (eq (send ?instance get-cost) baix)))
+            (and (eq ?poder_adquisitiu_persona normal) (or (eq (send ?instance get-cost) alt) (eq (send ?instance get-cost) molt_alt)))
+            (and (eq ?poder_adquisitiu_persona alt) (eq (send ?instance get-cost) molt_alt)))
+        then (retract ?recomanacio)
     )
-
-    (progn$ (?i ?ins)
-        (assert (Recomanacio (Habitatge ?i)))
-    )
-
-
 )
 
+(defrule filtraPerEdatJove
+    (declare (salience -1))
+    ?recomanacio <- (Recomanacio (Habitatge ?instance))
+    ?dades <- (dadesPersona (edat ?edat))
+    (test (and (eq ?edat jove) (not (esCompatiblePersonesEstudiants (send ?instance get-nomBarri)))))
+    =>
+    (retract ?recomanacio)
+)
 
+(defrule filtraPerEdatMitjaGran
+    (declare (salience -1))
+    ?recomanacio <- (Recomanacio (Habitatge ?instance))
+    ?dades <- (dadesPersona (edat ?edat) (fills ?fills))
+    (test (and (or (eq ?edat mitjana_edat) (eq ?edat gran)) (not (eq ?fills noFills))))
+    (test (not (consultaCompatibilitatBarriNens (send ?instance get-nomBarri))))
+    =>
+    (retract ?recomanacio)
+)
 
-(defrule creaSolucioConcreta 
+(defrule filtraPerEdatMoltGran
+    (declare (salience -1))
+    ?recomanacio <- (Recomanacio (Habitatge ?instance))
+    ?dades <- (dadesPersona (edat ?edat))
+    (test (and (eq ?edat molt_gran) (not (consultaCompatibilitatBarriGrans (send ?instance get-nomBarri)))))
+    =>
+    (retract ?recomanacio)
+)
+
+(defrule filtraPerFills
+    (declare (salience -1))
+    ?recomanacio <- (Recomanacio (Habitatge ?instance))
+    ?dades <- (dadesPersona (edat ?edat) (fills ?fills))
+    (test (not (eq ?edat molt_gran)))
+    =>
+    (if (or (and (eq ?fills unFillMax) (eq (send ?instance get-esFamiliar) noFills))
+            (and (eq ?fills dosFillsMax) (or (eq (send ?instance get-esFamiliar) noFills) (eq (send ?instance get-esFamiliar) unFillMax)))
+            (and (eq ?fills tresFillsMax) (or (eq (send ?instance get-esFamiliar) noFills) (eq (send ?instance get-esFamiliar) unFillMax) (eq (send ?instance get-esFamiliar) dosFillsMax)))
+            (and (eq ?fills moltsFills) (not (eq (send ?instance get-esFamiliar) moltsFills))))
+        then (retract ?recomanacio)
+    )
+)
+
+(defrule filtraPerMascota
+    (declare (salience -1))
+    ?recomanacio <- (Recomanacio (Habitatge ?instance))
+    ?dades <- (dadesPersona (te_mascota ?te_mascota))
+    (test (and ?te_mascota (send ?instance get-mascotesPermeses)))
+    =>
+    (retract ?recomanacio)
+)
+
+(defrule filtraPerMobilitatReduida
+    (declare (salience -1))
+    ?recomanacio <- (Recomanacio (Habitatge ?instance))
+    ?dades <- (dadesPersona (mobilitatReduida ?mobilitatReduida))
+    (test (and ?mobilitatReduida (not (send ?instance get-compatiblePersonesMajors))))
+    =>
+    (retract ?recomanacio)
+)
+
+(defrule filtraPerZonaOnTreballa
+    (declare (salience -1))
+    ?recomanacio <- (Recomanacio (Habitatge ?instance))
+    ?dades <- (dadesPersona (te_cotxe ?te_cotxe) (zona_on_treballa ?zona_on_treballa))
+    (test (and (not ?te_cotxe) (not (barriAmbTransportPublic (send ?instance get-nomBarri))) (not (eq ?zona_on_treballa (send ?instance get-nomBarri)))))
+    =>
+    (retract ?recomanacio)
+)
+
+(defrule afegeixJustificacions
     (declare (salience -2))
-    ?recomenacio <- (Recomanacio (Habitatge ?habitatge))
+    ?recomanacio <- (Recomanacio (Habitatge ?habitatge))
     ?dades <- (dadesPersona (poder_adquisitiu ?poder_adquisitiu)
     (fills ?fills) (te_cotxe ?te_cotxe) (te_mascota ?te_mascota)
-    (mobilitatReduida ?mobilitatReduida) (zona_on_treballa ?zona_on_treballa))
+    (mobilitatReduida ?mobilitatReduida) (amoblada ?amoblada) (terrassa ?terrassa))
     =>
-    (bind $?justificacions (create$))
+    (bind $?justificacionsBones (create$))
+    (bind $?justificacionsDolentes (create$))
+    (bind ?puntuacio 0)
+
     (if (not (eq ?fills (send ?habitatge get-esFamiliar)))
-        then (bind ?justificacions (insert$ ?justificacions (+ (length$ ?justificacions) 1) t "L'habitatge té més habitacions"))
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge té més habitacions"))
+        (bind ?puntuacio (+ ?puntuacio 1))
     )
 
-    (modify ?recomenacio (justificacions ?justificacions))
+    (if (not (eq ?poder_adquisitiu (send ?habitatge get-cost)))
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge és més barat"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+    )
+
+    (if (send ?habitatge get-AC)
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge compta amb AC"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+        else (bind ?justificacionsDolentes (insert$ ?justificacionsDolentes (+ (length$ ?justificacionsDolentes) 1) "L'habitatge no compta amb AC"))
+        (bind ?puntuacio (- ?puntuacio 1))
+    )
+
+    (if (send ?habitatge get-calefaccio)
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge compta amb calefaccio"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+        else (bind ?justificacionsDolentes (insert$ ?justificacionsDolentes (+ (length$ ?justificacionsDolentes) 1) "L'habitatge no compta amb calefaccio"))
+        (bind ?puntuacio (- ?puntuacio 1))
+    )
+
+    (if (send ?habitatge get-obraNova)
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge és de obraNova"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+    )
+
+    (if (and (not (send ?habitatge get-parking)) ?te_cotxe)
+        then (bind ?justificacionsDolentes (insert$ ?justificacionsDolentes (+ (length$ ?justificacionsDolentes) 1) "L'habitatge no té parking"))
+        (bind ?puntuacio (- ?puntuacio 1))
+        else (if (send ?habitatge get-parking)
+            then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge té parking"))
+            (bind ?puntuacio (+ ?puntuacio 1))
+        )
+    )
+
+    (if (or (send ?habitatge get-piscinaIndividual) (send ?habitatge get-piscinaComunitaria))
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge té piscina"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+    )
+
+    (if (and (not (send ?habitatge get-terrassa)) ?terrassa)
+        then (bind ?justificacionsDolentes (insert$ ?justificacionsDolentes (+ (length$ ?justificacionsDolentes) 1) "L'habitatge no té terrassa"))
+        (bind ?puntuacio (- ?puntuacio 1))
+        else (if (send ?habitatge get-terrassa)
+            then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge té terrassa"))
+            (bind ?puntuacio (+ ?puntuacio 1))
+        )
+    )
+
+    (if (send ?habitatge get-jardi)
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge té jardí"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+    )
+
+    (if (send ?habitatge get-xemeneia)
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge té xemeneia"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+    )
+
+    (if (send ?habitatge get-vistes)
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge compta té bones vistes"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+        else (bind ?justificacionsDolentes (insert$ ?justificacionsDolentes (+ (length$ ?justificacionsDolentes) 1) "L'habitatge no té vistes"))
+        (bind ?puntuacio (- ?puntuacio 1))
+    )
+
+    (if (and (not (send ?habitatge get-amoblat)) ?amoblada)
+        then (bind ?justificacionsDolentes (insert$ ?justificacionsDolentes (+ (length$ ?justificacionsDolentes) 1) "L'habitatge no vé amoblat"))
+        (bind ?puntuacio (- ?puntuacio 1))
+        else (if (send ?habitatge get-amoblat)
+            then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge vé amoblat"))
+            (bind ?puntuacio (+ ?puntuacio 1))
+        )
+    )
+
+    (if (eq (send ?habitatge get-qualitatDelsAcabats) Alt)
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge té uns bons acabats"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+        else (bind ?justificacionsDolentes (insert$ ?justificacionsDolentes (+ (length$ ?justificacionsDolentes) 1) "L'habitatge té uns mals acabats"))
+        (bind ?puntuacio (- ?puntuacio 1))
+    )
+
+
+    (modify ?recomanacio (justificacionsBones ?justificacionsBones))
+    (modify ?recomanacio (justificacionsDolentes ?justificacionsDolentes))
+    (modify ?recomanacio (puntuacio ?puntuacio))
+)
+
+(deffunction getPreu (?nomCarrer)
+    (bind ?instances (find-all-instances ((?i HabitatgeCONCRET)) (eq ?nomCarrer (send ?i get-nomCarrer))))
+    (progn$ (?ins ?instances)
+        (bind ?preu (send ?ins get-preu))
+    )
+    ?preu
 )
 
 
+(defrule impresioRecomanacionsMoltBones
+    (declare (salience -10))
+    ?recomanacio <- (Recomanacio (Habitatge ?habitatge) (puntuacio ?puntuacio)
+    (justificacionsBones $?justificacionsBones))
+    (test (> ?puntuacio 1))
+    =>
+    (printout t "Habitatge: " (send ?habitatge get-nomCarrer) crlf)
+    (bind ?preu (getPreu (send ?habitatge get-nomCarrer)))
+    (printout t "amb preu: " ?preu " és Molt Recomanable" crlf)
+    (progn$ (?justificacio ?justificacionsBones)
+        (printout t ?justificacio crlf)
+    )
+    (printout t "----------------------------------------------------------------" crlf)
+    (printout t crlf)
+)
 
+(defrule impresioRecomanacionsAdecuades
+    (declare (salience -11))
+    ?recomanacio <- (Recomanacio (Habitatge ?habitatge) (puntuacio ?puntuacio))
+    (test (and (>= ?puntuacio -1) (<= ?puntuacio 1)))
+    =>
+    (printout t "Habitatge: " (send ?habitatge get-nomCarrer) crlf)
+    (bind ?preu (getPreu (send ?habitatge get-nomCarrer)))
+    (printout t "amb preu: " ?preu " és Adecuat" crlf)
+    (printout t "----------------------------------------------------------------" crlf)
+    (printout t crlf)
+)
+
+(defrule impresioRecomanacionsParcialmentAdecuades
+    (declare (salience -12))
+    ?recomanacio <- (Recomanacio (Habitatge ?habitatge) (puntuacio ?puntuacio)
+    (justificacionsDolentes $?justificacionsDolentes))
+    (test (< ?puntuacio -1))
+    =>
+    (printout t "Habitatge: " (send ?habitatge get-nomCarrer) crlf)
+    (bind ?preu (getPreu (send ?habitatge get-nomCarrer)))
+    (printout t "amb preu: " ?preu " és Parcialment Adecuadt" crlf)
+    (progn$ (?justificacio ?justificacionsDolentes)
+        (printout t ?justificacio crlf)
+    )
+    (printout t "----------------------------------------------------------------" crlf)
+    (printout t crlf)
+)
 
 
 
@@ -1078,7 +1266,7 @@
     (amoblat TRUE)
     (mascotesPermeses TRUE)
     (dormitoris 6)
-    (preu 17921)
+    (preu 1200)
     (superficie 200)
     (qualitatDelsAcabats Mitja)
     (nomBarri SAM)
@@ -1560,8 +1748,8 @@
     (vistes FALSE)
     (amoblat TRUE)
     (mascotesPermeses FALSE)
-    (dormitoris 2)
-    (preu 3749)
+    (dormitoris 5)
+    (preu 1500)
     (superficie 790)
     (qualitatDelsAcabats Alt)
     (nomBarri SAM)
@@ -2134,9 +2322,9 @@
     (xemeneia TRUE)
     (vistes TRUE)
     (amoblat FALSE)
-    (mascotesPermeses FALSE)
+    (mascotesPermeses TRUE)
     (dormitoris 4)
-    (preu 5236)
+    (preu 1000)
     (superficie 843)
     (qualitatDelsAcabats Mitja)
     (nomBarri LC)
@@ -2617,7 +2805,7 @@
     (xemeneia FALSE)
     (vistes FALSE)
     (amoblat FALSE)
-    (mascotesPermeses FALSE)
+    (mascotesPermeses TRUE)
     (dormitoris 1)
     (preu 642)
     (superficie 167)
