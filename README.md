@@ -5,7 +5,8 @@
 
 
 - Implementació:
-  - Diumenge acabaré tot el codi; està bastant enllestit, hi havi un munt d'errors però lo que hi ha a onto4 funciona, encar que li queden coses a implmentar. Però     si treballem sobre aquesta base i anem afegint, no hauriem de tenir cap problema.
+  - Diumenge acabaré tot el codi; està bastant enllestit, hi havia un munt d'errors però lo que hi ha a onto4 funciona, encara que li queden coses a implmentar.
+    Però si treballem sobre aquesta base i anem afegint, no hauriem de tenir cap problema.
 
 
 Si podeu anar avançant la documentació estaria niceee.
