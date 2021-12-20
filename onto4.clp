@@ -703,7 +703,7 @@
     (printout t "Escriu 1 si prefereixes una casa, 2 si prefereixes un pis" crlf)
     (printout t "1. Casa" crlf)
     (printout t "2. Pis" crlf)
-    (bind ?tipus (readline))
+    (bind ?tipus (read))
     (switch ?tipus
             (case 1 then (modify ?dades (tipusVivenda casa)))
             (case 2 then (modify ?dades (tipusVivenda pis)))
