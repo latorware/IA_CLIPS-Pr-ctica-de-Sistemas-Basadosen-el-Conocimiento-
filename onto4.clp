@@ -393,8 +393,6 @@
 )
 
 
-
-
 (defclass BarriCONCRET
     (is-a USER)
     (role concrete)
@@ -420,16 +418,25 @@
 
 (defmodule MAIN (export ?ALL))
 
-(defmodule abstraccioProblema)
+(defmodule abstraccioProblema
+    (import MAIN ?ALL)
+    (export ?ALL)
+)
 
 (defmodule preguntesUsuari
     (import MAIN ?ALL)
     (export ?ALL)
 )
 
-(defmodule solucioConcreta)
+(defmodule solucioConcreta
+    (import MAIN ?ALL)
+    (export ?ALL)
+)
 
-(defmodule impressioSolucio)
+(defmodule impressioSolucio
+    (import MAIN ?ALL)
+    (export ?ALL)
+)
 
 
 
@@ -483,7 +490,7 @@
     )
 )
 
-(deftemplate Recomanacio
+(deftemplate MAIN::Recomanacio
     (slot Habitatge
         (type INSTANCE))
     (slot puntuacio
@@ -500,30 +507,26 @@
 
 
 
-(defrule initial "initial rule"
+(defrule MAIN::initial "initial rule"
 	(declare (salience 20))
 	=>
 	(printout t "--------------------------------------------------------------" crlf)
-	(printout t "--------------------------------------------------------------" crlf)
+	(printout t "-----------------                              ---------------" crlf)
 	(printout t "--------------- SISTEMA RECOMANADOR D'HABITATGES -------------" crlf)
-	(printout t "--------------------------------------------------------------" crlf)
+	(printout t "-----------------                              ---------------" crlf)
 	(printout t "--------------------------------------------------------------" crlf)
     (assert (dadesPersona)) ; Creem la llista ordenadea de fets que cotindra les dades de l'usuari
 	(printout t crlf)
+    (focus preguntesUsuari)
 )
 
 
-;MODUL QUESTIONS
+;=============================================================================
+;                       MÒDUL DE PREGUNTES A L'USUARI
+;=============================================================================
 
-    ;aqui farem una defrule per pregunta
-    ;auriem danar especificant els atributs de la instancia de persona
-;(defrule edat "Estableix l'edat d'una persona"
-;    (not (edat ?))
-;    =>
-;    (bind ?edat (pregunta-numerica "Quina és la seva edat? " 1 110))
-;)
 
-(deffunction binary-question "function to ask questions with binary answers values" (?pregunta)
+(deffunction preguntesUsuari::binary-question "function to ask questions with binary answers values" (?pregunta)
 	(format t "%s" ?pregunta)
 	(printout t " (si/no/s/n): " crlf)
 	(bind ?respuesta (read))
@@ -533,10 +536,10 @@
 	)
 )
 
-(defrule getSou
+(defrule preguntesUsuari::getSou
     (declare (salience 17))
     =>
-    (printout t "Quin és el teu/vostre salari mensual?" crlf)
+    (printout t "Quin és el teu sou? (mensual)" crlf)
     (bind ?salari (read))
     (if (<= ?salari 1500) then
         (bind ?var baix)
@@ -550,8 +553,8 @@
     (modify 1(poder_adquisitiu ?var))
 )
 
-(defrule getEdat
-    (declare (salience 16))
+(defrule preguntesUsuari::getEdat
+    (declare (salience 20))
     =>
     (printout t "Quina es la seva edat?" crlf)
     (bind ?edat (read))
@@ -568,18 +571,18 @@
     (modify 1(edat ?var))
 )
 
-(defrule getRelacions
-    (declare (salience 15))
+(defrule preguntesUsuari::getRelacions
+    (declare (salience 19))
     =>
     (if (binary-question "Tens parella?")
         then (modify 1(parella TRUE))
         else (modify 1(parella FALSE)))
 )
 
-(defrule getFills
-    (declare (salience 14))
+(defrule preguntesUsuari::getFills
+    (declare (salience 18))
     =>
-    (printout t "Quant fills tens?" crlf)
+    (printout t "Quants fills tens?" crlf)
     (bind ?fills (read))
     (switch ?fills
         (case 0 then (modify 1(fills noFills)))
@@ -590,8 +593,8 @@
     )
 )
 
-(defrule get_barris
-    (declare (salience 13))
+(defrule preguntesUsuari::get_barris
+    (declare (salience 9))
     =>
     (printout t "Quines zones de Barcelona t'agraden més?" crlf)
     (printout t "Escriu els números separats per espais 1 2 3, no importa l'ordre, o 0 si no tens cap preferencia" crlf)
@@ -626,32 +629,32 @@
     )
 )
 
-(defrule get_cotxe
-    (declare (salience 12))
+(defrule preguntesUsuari::get_cotxe
+    (declare (salience 16))
     =>
     (if (binary-question "Tens cotxe?")
         then (modify 1(te_cotxe TRUE))
         else (modify 1(te_cotxe FALSE)))
 )
 
-(defrule get_mascotes
-    (declare (salience 11))
+(defrule preguntesUsuari::get_mascotes
+    (declare (salience 15))
     =>
     (if (binary-question "Tens mascotes?")
         then (modify 1(te_mascota TRUE))
         else (modify 1(te_mascota FALSE)))
 )
 
-(defrule getAmoblat
-    (declare (salience 10))
+(defrule preguntesUsuari::getAmoblat
+    (declare (salience 13))
     =>
     (if (binary-question "Prefereixes una vivenda que ja estiugui amoblada?")
         then (modify 1(amoblada TRUE))
         else (modify 1(amoblada FALSE)))
 )
 
-(defrule getTerrassa
-    (declare (salience 9))
+(defrule preguntesUsuari::getTerrassa
+    (declare (salience 12))
     =>
     (if (binary-question "Prefereixes una vivenda amb terrassa?")
         then (modify 1(terrassa TRUE))
@@ -660,8 +663,8 @@
 
 
 
-(defrule getTipusVivenda
-   (declare (salience 8))
+(defrule preguntesUsuari::getTipusVivenda
+   (declare (salience 11))
     =>
     (printout t "Què prefereixes una casa o un pis?" crlf)
     (printout t "Escriu 1 si prefereixes una casa, 2 si prefereixes un pis" crlf)
@@ -674,8 +677,8 @@
     )
 )
 
-(defrule getMobilitatReduida
-    (declare (salience 7))
+(defrule preguntesUsuari::getMobilitatReduida
+    (declare (salience 14))
     =>
     (if (binary-question "Tens o hi ha algun acompanyant que tingui mobilitat reduida?")
         then (modify 1(mobilitatReduida TRUE))
@@ -683,61 +686,49 @@
     )
 )
 
-(defrule getServeisPreferits   ;;NO ESTAN TOTES ELS SERVEIS SAN AFEGIT
-    (declare (salience 6))
+(defrule preguntesUsuari::getZonaOnTreballa
+    (declare (salience 10))
     =>
-    (printout t "Quins tipus serveis voldries tenir més a prop?" crlf)
-    (printout t "Escriu els números separats per espais 1 2 3, no importa l'ordre, o 0 si no tens cap preferencia" crlf)
-    (printout t "1. Supermercat" crlf)
-    (printout t "2. Mercat" crlf)
-    (printout t "3. Parc" crlf)
-    (printout t "4. CentreEsportiu" crlf)
-    (printout t "5. Gimnas" crlf)
-    (printout t "6. TransporPublic" crlf)
-    (printout t "7. CentreSalut" crlf)
-    (printout t "8. Escola" crlf)
-    (printout t "9. Oci" crlf)
+    (printout t "A quina zona de Barcelona Treballes?" crlf)
+    (printout t "1. Ciutat Vella" crlf)
+    (printout t "2. Eixample" crlf)
+    (printout t "3. Sants-Montjuic" crlf)
+    (printout t "4. Les Corts" crlf)
+    (printout t "5. Sarrià - Sant Gervàsi" crlf)
+    (printout t "6. Gràcia" crlf)
+    (printout t "7. Horta - Guinardó" crlf)
+    (printout t "8. Nous Barris" crlf)
+    (printout t "9. Sant Andreu" crlf)
+    (printout t "10. Sant Martí" crlf)
 
-    (bind ?serveis (readline))
-    (bind ?serveis (explode$ ?serveis))
-    (bind $?dades (create$))
-    (progn$ (?serv ?serveis)
-        (switch ?serv
-            (case 1 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Supermercat)))
-            (case 2 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Mercat)))
-            (case 3 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Parc)))
-            (case 4 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) CentreEsportiu)))
-            (case 5 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Gimnas)))
-            (case 6 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) TransporPublic)))
-            (case 7 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) CentreSalut)))
-            (case 8 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Escola)))
-            (case 9 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) Oci)))
-        )
-        (modify 1(serveis_preferits ?dades))
+    (bind ?zona (read))
+    (switch ?zona
+        (case 1 then (modify 1(zona_on_treballa CV)))
+        (case 2 then (modify 1(zona_on_treballa E)))
+        (case 3 then (modify 1(zona_on_treballa SAM)))
+        (case 4 then (modify 1(zona_on_treballa LC)))
+        (case 5 then (modify 1(zona_on_treballa SSG)))
+        (case 6 then (modify 1(zona_on_treballa G)))
+        (case 7 then (modify 1(zona_on_treballa HG)))
+        (case 8 then (modify 1(zona_on_treballa NB)))
+        (case 9 then (modify 1(zona_on_treballa SA)))
+        (case 10 then (modify 1(zona_on_treballa SM)))
     )
 )
 
-(defrule getZonaOnTreballa
-    (declare (salience 5))
+(defrule preguntesUsuari::canviAbstraccioProblema
+    (declare (salience -10))
     =>
-    (printout t "A quina zona treballes?" crlf)
-    (bind ?zona (read))
-    (modify 1(zona_on_treballa ?zona))
+    (focus abstraccioProblema)
 )
 
 
-;(defrule sou "regla per saber el sou que te la persona que sesta analitzant"
-
-;)
-
-;...
+;=============================================================================
+;                       MÒDUL DE ABSTRACCIÓ DEL PROBLEMA
+;=============================================================================
 
 
-
-;RECOMENDATION MODUL
-
-
-(deffunction converteixEsFamiliar (?dormitoris ?grandaria)
+(deffunction abstraccioProblema::converteixEsFamiliar (?dormitoris ?grandaria)
     (switch ?dormitoris
         (case 1 then noFills)
         (case 2 then (if (> ?grandaria 60)
@@ -750,7 +741,7 @@
     )
 )
 
-(deffunction converteixSouCost (?preu)
+(deffunction abstraccioProblema::converteixSouCost (?preu)
     (if (<= ?preu 700) then
         (bind ?var baix)
         else (if (< ?preu 1500) then
@@ -764,7 +755,7 @@
     ?var
 )
 
-(deffunction converteixSuperficieAGrandaria (?superficie)
+(deffunction abstraccioProblema::converteixSuperficieAGrandaria (?superficie)
     (if (<= ?superficie 40) then
         (bind ?var moltPetit)
         else (if (< ?superficie 70) then
@@ -779,11 +770,21 @@
     ?var
 )
 
-(deffunction converteixSubclasseATipusHabitatge (?tipus)
+(deffunction abstraccioProblema::converteixSubclasseATipusHabitatge (?tipus)
     ?tipus
 )
 
-(deffunction converteixAlturaplanta (?altura)
+(deffunction abstraccioProblema::habitatgeCompatiblePersonesMajors (?ascensor ?altura)
+    (if (= ?altura 0)
+        then (if (not ?ascensor)
+            then FALSE
+            else TRUE
+        )
+        else TRUE
+    )
+)
+
+(deffunction abstraccioProblema::converteixAlturaplanta (?altura)
     (if (<= ?altura 0) then
         (bind ?var PlantaBaixa)
         else (if (< ?altura 4) then
@@ -794,8 +795,8 @@
     ?var
 )
 
-(defrule creaHabitatgesAbstractes
-    (declare (salience 18))
+(defrule abstraccioProblema::creaHabitatgesAbstractes
+    (declare (salience 10))
      =>
     (bind ?instances (find-all-instances ((?i HabitatgeCONCRET)) TRUE))
     (progn$ (?i ?instances)
@@ -803,11 +804,11 @@
         (bind ?atributCost (converteixSouCost (send ?i get-preu)))
         (bind ?atributGrandaria (converteixSuperficieAGrandaria (send ?i get-superficie)))
         (bind ?atributHabitatge (converteixSubclasseATipusHabitatge (type ?i)))
+        (bind ?atributCompatiblePersonesMajors (habitatgeCompatiblePersonesMajors (send ?i get-ascensor) (send ?i get-planta)))
         (if (= (str-compare (type ?i) Pis) 0)
             then (bind ?atributPlanta (converteixAlturaplanta (send ?i get-planta)) )
             else (bind ?atributPlanta diversesPlantes)
         )
-
 
         (bind ?instance (make-instance (send ?i get-nomCarrer) of HabitatgeABSTRACTE
         (esFamiliar ?atributEsFamiliar)
@@ -816,8 +817,7 @@
         (tipus ?atributHabitatge)
         (altura ?atributPlanta)
         (nomCarrer (send ?i get-nomCarrer))
-        (compatiblePersonesMajors TRUE)
-        ;;Canviar compatiblePersonesMajors
+        (compatiblePersonesMajors ?atributCompatiblePersonesMajors)
         (nomBarri (send ?i get-nomBarri))
         (AC (send ?i get-AC))
         (calefaccio (send ?i get-calefaccio))
@@ -835,8 +835,7 @@
     )
 )
 
-
-(deffunction esCompatiblePersonesMajors (?nomDelBarri) ;;ha de tenir transport public, centre de salut, residencia
+(deffunction abstraccioProblema::esCompatiblePersonesMajors (?nomDelBarri) ;;ha de tenir transport public, centre de salut, residencia
     (bind ?instances (find-all-instances ((?i Servei)) (= (str-compare (send ?i get-nomBarri) ?nomDelBarri) 0) ))
     (bind ?countTransportPublic 0)
     (bind ?countCentreSalut 0)
@@ -852,8 +851,8 @@
                 )
             )
         )
-
     )
+
     (if (>= ?countTransportPublic 1)
         then (if (>= ?countCentreSalut 1)
             then (if (>= ?countResidencia 1)
@@ -863,10 +862,9 @@
     )
 
     ?result
-
 )
 
-(deffunction esCompatiblePersonesEstudiants (?nomDelBarri)
+(deffunction abstraccioProblema::esCompatiblePersonesEstudiants (?nomDelBarri)
     (bind ?instances (find-all-instances ((?i Servei)) (= (str-compare (send ?i get-nomBarri) ?nomDelBarri) 0) ))
     (bind ?countUniversistat 0)
     (bind ?result FALSE)
@@ -874,19 +872,17 @@
         (if (= (str-compare (type ?i) Universistat) 0)
             then (bind ?countUniversistat (+ ?countUniversistat 1) )
         )
-
     )
 
     (if (>= ?countUniversistat 1)
         then (bind ?result TRUE)
         else (bind ?result FALSE)
-
     )
 
     ?result
 )
 
-(deffunction esCompatibleNens (?nomDelBarri) ;;parc tambe escola
+(deffunction abstraccioProblema::esCompatibleNens (?nomDelBarri) ;;parc tambe escola
     (bind ?instances (find-all-instances ((?i Servei)) (= (str-compare (send ?i get-nomBarri) ?nomDelBarri) 0) ))
     (bind ?countParc 0)
     (bind ?countEscola 0)
@@ -898,7 +894,6 @@
                 then (bind ?countEscola (+ ?countEscola 1) )
             )
         )
-
     )
     (if (>= ?countEscola 1)
         then (if (>= ?countParc 1)
@@ -907,11 +902,9 @@
     )
 
     ?result
-
-
 )
 
-(deffunction converteixSouARiquesaBarri (?sou)
+(deffunction abstraccioProblema::converteixSouARiquesaBarri (?sou)
         (if (<= ?sou 1700) then
         (bind ?var pobre)
         else (if (< ?sou 2500) then
@@ -922,10 +915,8 @@
     ?var
 )
 
-
-
-(defrule creaBarrisAbstractes
-    (declare (salience 19))
+(defrule abstraccioProblema::creaBarrisAbstractes
+    (declare (salience 20))
     =>
     (bind ?instances (find-all-instances ((?i BarriCONCRET)) TRUE))
     (progn$ (?i ?instances)
@@ -944,7 +935,20 @@
     )
 )
 
-(deffunction consultaCompatibilitatBarriNens (?barri)
+(defrule abstraccioProblema::canviAGenerarSolucióConcreta
+    (declare (salience -10))
+    =>
+    (focus solucioConcreta)
+)
+
+
+;=============================================================================
+;                       MÒDUL DE CREACIÓ SOLUCIÓ ABSTRACTE
+;                       "i posteriorment concreta"
+;=============================================================================
+
+
+(deffunction solucioConcreta::consultaCompatibilitatBarriNens (?barri)
     (bind ?instances (find-all-instances ((?i BarriABSTRACTE)) (and (= (str-compare (send ?i get-nom) ?barri) 0) (send ?i get-compatibleNens)) ))
     (if (= (length$ ?instances) 0)
         then FALSE
@@ -952,16 +956,25 @@
     )
 )
 
-(deffunction consultaCompatibilitatBarriJoves (?barri)
-    (bind ?instances (find-all-instances ((?i BarriABSTRACTE)) (and (= (str-compare (send ?i get-nom) ?barri) 0) (send ?i get-compatiblePersonesEstudiants)) ))
-    (if (= (length$ ?instances) 0)
-        then FALSE
-        else TRUE
+(deffunction solucioConcreta::consultaCompatibilitatBarriJoves (?barri)
+    (bind ?instances (find-all-instances ((?i Servei)) (= (str-compare (send ?i get-nomBarri) ?barri) 0) ))
+    (bind ?countUniversistat 0)
+    (bind ?result FALSE)
+    (progn$ (?i ?instances)
+        (if (= (str-compare (type ?i) Universistat) 0)
+            then (bind ?countUniversistat (+ ?countUniversistat 1) )
+        )
     )
-    FALSE
+
+    (if (>= ?countUniversistat 1)
+        then (bind ?result TRUE)
+        else (bind ?result FALSE)
+    )
+
+    ?result
 )
 
-(deffunction consultaCompatibilitatBarriGrans (?barri)
+(deffunction solucioConcreta::consultaCompatibilitatBarriGrans (?barri)
     (bind ?instances (find-all-instances ((?i BarriABSTRACTE)) (and (= (str-compare (send ?i get-nom) ?barri) 0) (send ?i get-compatiblePersonesMajors)) ))
     (if (= (length$ ?instances) 0)
         then FALSE
@@ -969,7 +982,7 @@
     )
 )
 
-(deffunction barriAmbTransportPublic (?barri)
+(deffunction solucioConcreta::barriAmbTransportPublic (?barri)
     (bind ?instances (find-all-instances ((?i TransportPublic)) (= (str-compare (send ?i get-nomBarri) ?barri) 0)))
     (if (= (length$ ?instances) 0)
         then FALSE
@@ -978,8 +991,7 @@
 )
 
 
-(defrule filtraPerRiquesa
-    (declare (salience -1))
+(defrule solucioConcreta::filtraPerRiquesa
     ?recomanacio <- (Recomanacio (Habitatge ?instance))
     ?dades <- (dadesPersona (poder_adquisitiu ?poder_adquisitiu_persona))
     ;(test (not (eq (send ?instance get-cost) ?poder_adquisitiu_persona)))
@@ -991,17 +1003,15 @@
     )
 )
 
-(defrule filtraPerEdatJove
-    (declare (salience -1))
+(defrule solucioConcreta::filtraPerEdatJove
     ?recomanacio <- (Recomanacio (Habitatge ?instance))
     ?dades <- (dadesPersona (edat ?edat))
-    (test (and (eq ?edat jove) (not (esCompatiblePersonesEstudiants (send ?instance get-nomBarri)))))
+    (test (and (eq ?edat jove) (not (consultaCompatibilitatBarriJoves (send ?instance get-nomBarri)))))
     =>
     (retract ?recomanacio)
 )
 
-(defrule filtraPerEdatMitjaGran
-    (declare (salience -1))
+(defrule solucioConcreta::filtraPerEdatMitjaGran
     ?recomanacio <- (Recomanacio (Habitatge ?instance))
     ?dades <- (dadesPersona (edat ?edat) (fills ?fills))
     (test (and (or (eq ?edat mitjana_edat) (eq ?edat gran)) (not (eq ?fills noFills))))
@@ -1010,8 +1020,7 @@
     (retract ?recomanacio)
 )
 
-(defrule filtraPerEdatMoltGran
-    (declare (salience -1))
+(defrule solucioConcreta::filtraPerEdatMoltGran
     ?recomanacio <- (Recomanacio (Habitatge ?instance))
     ?dades <- (dadesPersona (edat ?edat))
     (test (and (eq ?edat molt_gran) (not (consultaCompatibilitatBarriGrans (send ?instance get-nomBarri)))))
@@ -1019,8 +1028,7 @@
     (retract ?recomanacio)
 )
 
-(defrule filtraPerFills
-    (declare (salience -1))
+(defrule solucioConcreta::filtraPerFills
     ?recomanacio <- (Recomanacio (Habitatge ?instance))
     ?dades <- (dadesPersona (edat ?edat) (fills ?fills))
     (test (not (eq ?edat molt_gran)))
@@ -1033,8 +1041,7 @@
     )
 )
 
-(defrule filtraPerMascota
-    (declare (salience -1))
+(defrule solucioConcreta::filtraPerMascota
     ?recomanacio <- (Recomanacio (Habitatge ?instance))
     ?dades <- (dadesPersona (te_mascota ?te_mascota))
     (test (and ?te_mascota (send ?instance get-mascotesPermeses)))
@@ -1042,8 +1049,7 @@
     (retract ?recomanacio)
 )
 
-(defrule filtraPerMobilitatReduida
-    (declare (salience -1))
+(defrule solucioConcreta::filtraPerMobilitatReduida
     ?recomanacio <- (Recomanacio (Habitatge ?instance))
     ?dades <- (dadesPersona (mobilitatReduida ?mobilitatReduida))
     (test (and ?mobilitatReduida (not (send ?instance get-compatiblePersonesMajors))))
@@ -1051,8 +1057,7 @@
     (retract ?recomanacio)
 )
 
-(defrule filtraPerZonaOnTreballa
-    (declare (salience -1))
+(defrule solucioConcreta::filtraPerZonaOnTreballa
     ?recomanacio <- (Recomanacio (Habitatge ?instance))
     ?dades <- (dadesPersona (te_cotxe ?te_cotxe) (zona_on_treballa ?zona_on_treballa))
     (test (and (not ?te_cotxe) (not (barriAmbTransportPublic (send ?instance get-nomBarri))) (not (eq ?zona_on_treballa (send ?instance get-nomBarri)))))
@@ -1060,12 +1065,23 @@
     (retract ?recomanacio)
 )
 
-(defrule afegeixJustificacions
-    (declare (salience -2))
+(deffunction solucioConcreta::mateixaZonaQuePreferides (?zones_preferides ?barri)
+    (progn$ (?zona ?zones_preferides)
+        (if (eq ?zona ?barri)
+            then TRUE
+        )
+    )
+    FALSE
+
+)
+
+(defrule solucioConcreta::afegeixJustificacions
     ?recomanacio <- (Recomanacio (Habitatge ?habitatge))
     ?dades <- (dadesPersona (poder_adquisitiu ?poder_adquisitiu)
     (fills ?fills) (te_cotxe ?te_cotxe) (te_mascota ?te_mascota)
-    (mobilitatReduida ?mobilitatReduida) (amoblada ?amoblada) (terrassa ?terrassa))
+    (mobilitatReduida ?mobilitatReduida) (amoblada ?amoblada) (terrassa ?terrassa)
+    (zona_on_treballa ?zona_on_treballa) (zones_preferides $?zones_preferides)
+    (tipusVivenda ?tipusVivenda))
     =>
     (bind $?justificacionsBones (create$))
     (bind $?justificacionsDolentes (create$))
@@ -1156,13 +1172,53 @@
         (bind ?puntuacio (- ?puntuacio 1))
     )
 
+    (if (eq (send ?habitatge get-nomBarri) ?zona_on_treballa)
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge es troba a la mateixa zona on treballes"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+    )
+
+    (bind ?esTrobaEnZonaPreferida (mateixaZonaQuePreferides ?zones_preferides  (send ?habitatge get-nomBarri)))
+    (if ?esTrobaEnZonaPreferida
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge es troba en una de les teves zones preferides"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+        else (bind ?justificacionsDolentes (insert$ ?justificacionsDolentes (+ (length$ ?justificacionsDolentes) 1) "L'habitatge no es troba en cap de les teves zones preferides"))
+        (bind ?puntuacio (- ?puntuacio 1))
+    )
+
+    (bind ?tipus (send ?habitatge get-tipus))
+    (if (or (and (eq ?tipusVivenda casa) (or (eq ?tipus Unifamiliar) (eq ?tipus CasaIndividual) (eq ?tipus CasaAdosada) (eq ?tipus Xalet)))
+            (and (eq ?tipusVivenda pis) (not (and (eq ?tipus Unifamiliar) (eq ?tipus CasaIndividual) (eq ?tipus CasaAdosada) (eq ?tipus Xalet)))))
+        then (bind ?justificacionsBones (insert$ ?justificacionsBones (+ (length$ ?justificacionsBones) 1) "L'habitatge és del tipus que preferies"))
+        (bind ?puntuacio (+ ?puntuacio 1))
+        else (bind ?justificacionsDolentes (insert$ ?justificacionsDolentes (+ (length$ ?justificacionsDolentes) 1) "L'habitatge no és del tipus que preferies"))
+        (bind ?puntuacio (- ?puntuacio 1))
+    )
+
 
     (modify ?recomanacio (justificacionsBones ?justificacionsBones))
     (modify ?recomanacio (justificacionsDolentes ?justificacionsDolentes))
     (modify ?recomanacio (puntuacio ?puntuacio))
 )
 
-(deffunction getPreu (?nomCarrer)
+(defrule solucioConcreta::canviAImpresioSolucio
+    (declare (salience -10))
+    =>
+
+    (printout t "--------------------------------------------------------------" crlf)
+	(printout t "------- EL SISTEMA LI RECOMANA ELS SEGÜENTS HABITATGES -------" crlf)
+	(printout t "--------------------------------------------------------------" crlf)
+    (printout t crlf)
+    (focus impressioSolucio)
+)
+
+
+;=============================================================================
+;                       MÒDUL DE IMPRESIÓ SOLUCIÓ
+;                       "i posteriorment concreta"
+;=============================================================================
+
+
+(deffunction impressioSolucio::getPreu (?nomCarrer)
     (bind ?instances (find-all-instances ((?i HabitatgeCONCRET)) (eq ?nomCarrer (send ?i get-nomCarrer))))
     (progn$ (?ins ?instances)
         (bind ?preu (send ?ins get-preu))
@@ -1171,7 +1227,7 @@
 )
 
 
-(defrule impresioRecomanacionsMoltBones
+(defrule impressioSolucio::impresioRecomanacionsMoltBones
     (declare (salience -10))
     ?recomanacio <- (Recomanacio (Habitatge ?habitatge) (puntuacio ?puntuacio)
     (justificacionsBones $?justificacionsBones))
@@ -1179,7 +1235,7 @@
     =>
     (printout t "Habitatge: " (send ?habitatge get-nomCarrer) crlf)
     (bind ?preu (getPreu (send ?habitatge get-nomCarrer)))
-    (printout t "amb preu: " ?preu " és Molt Recomanable" crlf)
+    (printout t "Amb un preu de: " ?preu " és Molt Recomanable" crlf)
     (progn$ (?justificacio ?justificacionsBones)
         (printout t ?justificacio crlf)
     )
@@ -1187,19 +1243,19 @@
     (printout t crlf)
 )
 
-(defrule impresioRecomanacionsAdecuades
+(defrule impressioSolucio::impresioRecomanacionsAdequades
     (declare (salience -11))
     ?recomanacio <- (Recomanacio (Habitatge ?habitatge) (puntuacio ?puntuacio))
     (test (and (>= ?puntuacio -1) (<= ?puntuacio 1)))
     =>
     (printout t "Habitatge: " (send ?habitatge get-nomCarrer) crlf)
     (bind ?preu (getPreu (send ?habitatge get-nomCarrer)))
-    (printout t "amb preu: " ?preu " és Adecuat" crlf)
+    (printout t "Amb un preu de: " ?preu " és Adequat" crlf)
     (printout t "----------------------------------------------------------------" crlf)
     (printout t crlf)
 )
 
-(defrule impresioRecomanacionsParcialmentAdecuades
+(defrule impressioSolucio::impresioRecomanacionsParcialmentAdequades
     (declare (salience -12))
     ?recomanacio <- (Recomanacio (Habitatge ?habitatge) (puntuacio ?puntuacio)
     (justificacionsDolentes $?justificacionsDolentes))
@@ -1207,7 +1263,7 @@
     =>
     (printout t "Habitatge: " (send ?habitatge get-nomCarrer) crlf)
     (bind ?preu (getPreu (send ?habitatge get-nomCarrer)))
-    (printout t "amb preu: " ?preu " és Parcialment Adecuadt" crlf)
+    (printout t "Amb un preu de: " ?preu " és Parcialment Adequat" crlf)
     (progn$ (?justificacio ?justificacionsDolentes)
         (printout t ?justificacio crlf)
     )
