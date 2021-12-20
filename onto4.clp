@@ -447,46 +447,59 @@
 (deftemplate MAIN::dadesPersona
     (slot poder_adquisitiu
       (type SYMBOL)
-      (allowed-values baix normal alt molt_alt))
+      (allowed-values desc baix normal alt molt_alt)
+      (default desc))
     (slot parella
       (type SYMBOL)
-      (allowed-values FALSE TRUE))
+      (allowed-values desc FALSE TRUE)
+      (default desc))
     (slot edat
       (type SYMBOL)
-      (allowed-values jove mitjana_edat gran molt_gran))
+      (allowed-values desc jove mitjana_edat gran molt_gran)
+      (default desc))
     (slot fills
       (type SYMBOL)
-      (allowed-values noFills unFillMax dosFillsMax tresFillsMax moltsFills))
+      (allowed-values desc noFills unFillMax dosFillsMax tresFillsMax moltsFills)
+      (default desc))
     (multislot zones_preferides
-      (type SYMBOL))
+      (type SYMBOL)
+      (default desc))
     (slot te_cotxe
        (type SYMBOL)
-       (allowed-values FALSE TRUE))
+       (allowed-values desc FALSE TRUE)
+       (default desc))
     (slot te_mascota
         (type SYMBOL)
-        (allowed-values FALSE TRUE)
+        (allowed-values desc FALSE TRUE)
+        (default desc)
     )
     (slot tipusVivenda
         (type SYMBOL)
-        (allowed-values casa pis)
+        (allowed-values desc casa pis)
+        (default desc)
     )
     (slot mobilitatReduida
         (type SYMBOL)
-        (allowed-values FALSE TRUE)
+        (allowed-values desc FALSE TRUE)
+        (default desc)
     )
     (slot amoblada
         (type SYMBOL)
-        (allowed-values FALSE TRUE)
+        (allowed-values desc FALSE TRUE)
+        (default desc)
     )
     (slot terrassa
         (type SYMBOL)
-        (allowed-values FALSE TRUE)
+        (allowed-values desc FALSE TRUE)
+        (default desc)
     )
     (multislot serveis_preferits
         (type SYMBOL)
+        (default desc)
     )
     (slot zona_on_treballa
         (type SYMBOL)
+        (default desc)
     )
 )
 
@@ -538,6 +551,8 @@
 
 (defrule preguntesUsuari::getSou
     (declare (salience 17))
+    ?dades <- (dadesPersona (poder_adquisitiu ?poder_adquisitiu))
+    (test (eq ?poder_adquisitiu desc))
     =>
     (printout t "Quin és el teu sou? (mensual)" crlf)
     (bind ?salari (read))
@@ -550,11 +565,13 @@
                 else (bind ?var molt_alt)
         )
     )
-    (modify 1(poder_adquisitiu ?var))
+    (modify ?dades (poder_adquisitiu ?var))
 )
 
 (defrule preguntesUsuari::getEdat
     (declare (salience 20))
+    ?dades <- (dadesPersona (edat ?edat))
+    (test (eq ?edat desc))
     =>
     (printout t "Quina es la seva edat?" crlf)
     (bind ?edat (read))
@@ -568,33 +585,39 @@
             )
         )
     )
-    (modify 1(edat ?var))
+    (modify ?dades (edat ?var))
 )
 
 (defrule preguntesUsuari::getRelacions
     (declare (salience 19))
+    ?dades <- (dadesPersona (parella ?parella))
+    (test (eq ?parella desc))
     =>
     (if (binary-question "Tens parella?")
-        then (modify 1(parella TRUE))
-        else (modify 1(parella FALSE)))
+        then (modify ?dades (parella TRUE))
+        else (modify ?dades (parella FALSE)))
 )
 
 (defrule preguntesUsuari::getFills
     (declare (salience 18))
+    ?dades <- (dadesPersona (fills ?fills))
+    (test (eq ?fills desc))
     =>
     (printout t "Quants fills tens?" crlf)
     (bind ?fills (read))
     (switch ?fills
-        (case 0 then (modify 1(fills noFills)))
-        (case 1 then (modify 1(fills unFillMax)))
-        (case 2 then (modify 1(fills dosFillsMax)))
-        (case 3 then (modify 1(fills tresFillsMax)))
-        (default (modify 1(fills moltsFills)))
+        (case 0 then (modify ?dades (fills noFills)))
+        (case 1 then (modify ?dades (fills unFillMax)))
+        (case 2 then (modify ?dades (fills dosFillsMax)))
+        (case 3 then (modify ?dades (fills tresFillsMax)))
+        (default (modify ?dades (fills moltsFills)))
     )
 )
 
 (defrule preguntesUsuari::get_barris
     (declare (salience 9))
+    ?dadesPersona <- (dadesPersona (zones_preferides ?zones_preferides))
+    (test (eq ?zones_preferides desc))
     =>
     (printout t "Quines zones de Barcelona t'agraden més?" crlf)
     (printout t "Escriu els números separats per espais 1 2 3, no importa l'ordre, o 0 si no tens cap preferencia" crlf)
@@ -625,46 +648,56 @@
             (case 9 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) SA)))
             (case 10 then (bind ?dades (insert$ ?dades (+ (length$ ?dades) 1) SM)))
         )
-        (modify 1(zones_preferides ?dades))
+        (modify ?dadesPersona (zones_preferides ?dades))
     )
 )
 
 (defrule preguntesUsuari::get_cotxe
     (declare (salience 16))
+    ?dades <- (dadesPersona (te_cotxe ?te_cotxe))
+    (test (eq ?te_cotxe desc))
     =>
     (if (binary-question "Tens cotxe?")
-        then (modify 1(te_cotxe TRUE))
-        else (modify 1(te_cotxe FALSE)))
+        then (modify ?dades (te_cotxe TRUE))
+        else (modify ?dades (te_cotxe FALSE)))
 )
 
 (defrule preguntesUsuari::get_mascotes
     (declare (salience 15))
+    ?dades <- (dadesPersona (te_mascota ?te_mascota))
+    (test (eq ?te_mascota desc))
     =>
     (if (binary-question "Tens mascotes?")
-        then (modify 1(te_mascota TRUE))
-        else (modify 1(te_mascota FALSE)))
+        then (modify ?dades (te_mascota TRUE))
+        else (modify ?dades (te_mascota FALSE)))
 )
 
 (defrule preguntesUsuari::getAmoblat
     (declare (salience 13))
+    ?dades <- (dadesPersona (amoblada ?amoblada))
+    (test (eq ?amoblada desc))
     =>
     (if (binary-question "Prefereixes una vivenda que ja estiugui amoblada?")
-        then (modify 1(amoblada TRUE))
-        else (modify 1(amoblada FALSE)))
+        then (modify ?dades (amoblada TRUE))
+        else (modify ?dades (amoblada FALSE)))
 )
 
 (defrule preguntesUsuari::getTerrassa
     (declare (salience 12))
+    ?dades <- (dadesPersona (terrassa ?terrassa))
+    (test (eq ?terrassa desc))
     =>
     (if (binary-question "Prefereixes una vivenda amb terrassa?")
-        then (modify 1(terrassa TRUE))
-        else (modify 1(terrassa FALSE)))
+        then (modify ?dades (terrassa TRUE))
+        else (modify ?dades (terrassa FALSE)))
 )
 
 
 
 (defrule preguntesUsuari::getTipusVivenda
    (declare (salience 11))
+   ?dades <- (dadesPersona (tipusVivenda ?tipusVivenda))
+   (test (eq ?tipusVivenda desc))
     =>
     (printout t "Què prefereixes una casa o un pis?" crlf)
     (printout t "Escriu 1 si prefereixes una casa, 2 si prefereixes un pis" crlf)
@@ -672,22 +705,26 @@
     (printout t "2. Pis" crlf)
     (bind ?tipus (readline))
     (switch ?tipus
-            (case 1 then (modify 1(tipusVivenda casa)))
-            (case 2 then (modify 1(tipusVivenda pis)))
+            (case 1 then (modify ?dades (tipusVivenda casa)))
+            (case 2 then (modify ?dades (tipusVivenda pis)))
     )
 )
 
 (defrule preguntesUsuari::getMobilitatReduida
     (declare (salience 14))
+    ?dades <- (dadesPersona (mobilitatReduida ?mobilitatReduida))
+    (test (eq ?mobilitatReduida desc))
     =>
     (if (binary-question "Tens o hi ha algun acompanyant que tingui mobilitat reduida?")
-        then (modify 1(mobilitatReduida TRUE))
-        else (modify 1(mobilitatReduida FALSE))
+        then (modify ?dades (mobilitatReduida TRUE))
+        else (modify ?dades (mobilitatReduida FALSE))
     )
 )
 
 (defrule preguntesUsuari::getZonaOnTreballa
     (declare (salience 10))
+    ?dades <- (dadesPersona (zona_on_treballa ?zona_on_treballa))
+    (test (eq ?zona_on_treballa desc))
     =>
     (printout t "A quina zona de Barcelona Treballes?" crlf)
     (printout t "1. Ciutat Vella" crlf)
@@ -703,16 +740,16 @@
 
     (bind ?zona (read))
     (switch ?zona
-        (case 1 then (modify 1(zona_on_treballa CV)))
-        (case 2 then (modify 1(zona_on_treballa E)))
-        (case 3 then (modify 1(zona_on_treballa SAM)))
-        (case 4 then (modify 1(zona_on_treballa LC)))
-        (case 5 then (modify 1(zona_on_treballa SSG)))
-        (case 6 then (modify 1(zona_on_treballa G)))
-        (case 7 then (modify 1(zona_on_treballa HG)))
-        (case 8 then (modify 1(zona_on_treballa NB)))
-        (case 9 then (modify 1(zona_on_treballa SA)))
-        (case 10 then (modify 1(zona_on_treballa SM)))
+        (case 1 then (modify ?dades (zona_on_treballa CV)))
+        (case 2 then (modify ?dades (zona_on_treballa E)))
+        (case 3 then (modify ?dades (zona_on_treballa SAM)))
+        (case 4 then (modify ?dades (zona_on_treballa LC)))
+        (case 5 then (modify ?dades (zona_on_treballa SSG)))
+        (case 6 then (modify ?dades (zona_on_treballa G)))
+        (case 7 then (modify ?dades (zona_on_treballa HG)))
+        (case 8 then (modify ?dades (zona_on_treballa NB)))
+        (case 9 then (modify ?dades (zona_on_treballa SA)))
+        (case 10 then (modify ?dades (zona_on_treballa SM)))
     )
 )
 
