@@ -42,9 +42,16 @@ public class randomHabitatges {
     }
 
     public static int randompreu() {
-        Random rand = new Random(); 
-        int value = rand.nextInt((20000 - 450) + 1) + 450;
-        return value;  
+        if( new Random().nextDouble() <= 0.80 ) {
+            Random rand = new Random(); 
+            int value = rand.nextInt((4000 - 450) + 1) + 450;
+            return value;  
+         }
+         else {
+            Random rand = new Random(); 
+            int value = rand.nextInt((20000 - 4000) + 1) + 4000;
+            return value;  
+         }
     }
 
     public static int randomsuperficie() {
