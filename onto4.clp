@@ -726,7 +726,7 @@
     ?dades <- (dadesPersona (zona_on_treballa ?zona_on_treballa))
     (test (eq ?zona_on_treballa desc))
     =>
-    (printout t "A quina zona de Barcelona Treballes?" crlf)
+    (printout t "A quina zona de Barcelona treballes/estudies/passes el dia?" crlf)
     (printout t "1. Ciutat Vella" crlf)
     (printout t "2. Eixample" crlf)
     (printout t "3. Sants-Montjuic" crlf)
