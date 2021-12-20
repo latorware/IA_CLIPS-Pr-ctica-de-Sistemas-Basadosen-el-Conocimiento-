@@ -43,9 +43,17 @@ public class randomHabitatges {
 
     public static int randompreu() {
         if( new Random().nextDouble() <= 0.80 ) {
-            Random rand = new Random(); 
-            int value = rand.nextInt((4000 - 450) + 1) + 450;
-            return value;  
+            if (new Random().nextDouble() <= 0.40) {
+                Random rand = new Random(); 
+                int value = rand.nextInt((800 - 450) + 1) + 450;
+                return value;  
+            }
+            else {
+                Random rand = new Random(); 
+                int value = rand.nextInt((4000 - 800) + 1) + 800;
+                return value;  
+            }
+
          }
          else {
             Random rand = new Random(); 
@@ -55,9 +63,16 @@ public class randomHabitatges {
     }
 
     public static int randomsuperficie() {
-        Random rand = new Random(); 
-        int value = rand.nextInt((850 - 30) + 1) + 30;
-        return value;  
+        if( new Random().nextDouble() <= 0.80 ) {
+            Random rand = new Random(); 
+            int value = rand.nextInt((250 - 30) + 1) + 30;
+            return value;  
+         }
+         else {
+            Random rand = new Random(); 
+            int value = rand.nextInt((600 - 250) + 1) + 250;
+            return value;  
+         }
     }
 
     public static String randomqualitatacabat() {
@@ -143,7 +158,7 @@ public class randomHabitatges {
 
     public static void main(String[] args) throws Exception
     {
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 101; i <= 300; i++) {
             String tipus = randomTipus(); 
             int dormitoris = randomDormitoris(); 
             int preu = randompreu(); 

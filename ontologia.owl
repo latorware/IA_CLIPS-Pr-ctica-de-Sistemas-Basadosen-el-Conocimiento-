@@ -14,221 +14,470 @@
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#AC
 :AC rdf:type owl:DatatypeProperty ;
-    rdfs:domain :Habitatge ;
+    rdfs:domain :HabitatgeABSTRACTE ,
+                :HabitatgeCONCRET ;
     rdfs:range xsd:boolean .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#balco
-:balco rdf:type owl:DatatypeProperty ;
-       rdfs:domain :Habitatge ;
-       rdfs:range xsd:boolean .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#altura
+:altura rdf:type owl:DatatypeProperty ;
+        rdfs:domain :HabitatgeABSTRACTE ;
+        rdfs:range [ rdf:type rdfs:Datatype ;
+                     owl:oneOf [ rdf:type rdf:List ;
+                                 rdf:first "PlantaBaixa" ;
+                                 rdf:rest [ rdf:type rdf:List ;
+                                            rdf:first "alta" ;
+                                            rdf:rest [ rdf:type rdf:List ;
+                                                       rdf:first "baixa" ;
+                                                       rdf:rest rdf:nil
+                                                     ]
+                                          ]
+                               ]
+                   ] .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#alturaPis
+:alturaPis rdf:type owl:DatatypeProperty ;
+           rdfs:domain :HabitatgeCONCRET ;
+           rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#amoblat
+:amoblat rdf:type owl:DatatypeProperty ;
+         rdfs:domain :HabitatgeABSTRACTE ,
+                     :HabitatgeCONCRET ;
+         rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#ascensor
+:ascensor rdf:type owl:DatatypeProperty ;
+          rdfs:domain :HabitatgeCONCRET ;
+          rdfs:range xsd:boolean .
 
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#calefaccio
 :calefaccio rdf:type owl:DatatypeProperty ;
-            rdfs:domain :Habitatge ;
+            rdfs:domain :HabitatgeABSTRACTE ,
+                        :HabitatgeCONCRET ;
             rdfs:range xsd:boolean .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#comunitaria
-:comunitaria rdf:type owl:DatatypeProperty ;
-             rdfs:subPropertyOf :piscina ;
-             rdfs:domain :Habitatge ;
-             rdfs:range xsd:boolean .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#compatibleNens
+:compatibleNens rdf:type owl:DatatypeProperty ;
+                rdfs:domain :BarriABSTRACTE ;
+                rdfs:range xsd:boolean .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#dobles
-:dobles rdf:type owl:DatatypeProperty ;
-        rdfs:subPropertyOf :dormitoris ;
-        rdfs:range xsd:int .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#compatiblePersonesEstudiants
+:compatiblePersonesEstudiants rdf:type owl:DatatypeProperty ;
+                              rdfs:domain :BarriABSTRACTE ;
+                              rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#compatiblePersonesMajors
+:compatiblePersonesMajors rdf:type owl:DatatypeProperty ;
+                          rdfs:domain :BarriABSTRACTE ,
+                                      :HabitatgeABSTRACTE ;
+                          rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#cost
+:cost rdf:type owl:DatatypeProperty ;
+      rdfs:domain :HabitatgeABSTRACTE ;
+      rdfs:range [ rdf:type rdfs:Datatype ;
+                   owl:oneOf [ rdf:type rdf:List ;
+                               rdf:first "alt" ;
+                               rdf:rest [ rdf:type rdf:List ;
+                                          rdf:first "baix" ;
+                                          rdf:rest [ rdf:type rdf:List ;
+                                                     rdf:first "molt_alt" ;
+                                                     rdf:rest [ rdf:type rdf:List ;
+                                                                rdf:first "normal" ;
+                                                                rdf:rest rdf:nil
+                                                              ]
+                                                   ]
+                                        ]
+                             ]
+                 ] .
 
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#dormitoris
 :dormitoris rdf:type owl:DatatypeProperty ;
-            rdfs:domain :Habitatge ;
-            rdfs:range xsd:int .
+            rdfs:domain :HabitatgeCONCRET ;
+            rdfs:range xsd:integer .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#garatge
-:garatge rdf:type owl:DatatypeProperty ;
-         rdfs:domain :Habitatge .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#esFamiliar
+:esFamiliar rdf:type owl:DatatypeProperty ;
+            rdfs:domain :HabitatgeABSTRACTE ;
+            rdfs:range [ rdf:type rdfs:Datatype ;
+                         owl:oneOf [ rdf:type rdf:List ;
+                                     rdf:first "dosFillsMax" ;
+                                     rdf:rest [ rdf:type rdf:List ;
+                                                rdf:first "moltsFills" ;
+                                                rdf:rest [ rdf:type rdf:List ;
+                                                           rdf:first "noFills" ;
+                                                           rdf:rest [ rdf:type rdf:List ;
+                                                                      rdf:first "tresFillsMax" ;
+                                                                      rdf:rest [ rdf:type rdf:List ;
+                                                                                 rdf:first "unFillMax" ;
+                                                                                 rdf:rest rdf:nil
+                                                                               ]
+                                                                    ]
+                                                         ]
+                                              ]
+                                   ]
+                       ] .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#localització
-:localització rdf:type owl:DatatypeProperty ;
-              rdfs:domain :Habitatge ,
-                          :Servei ;
-              rdfs:range xsd:int .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#grandaria
+:grandaria rdf:type owl:DatatypeProperty ;
+           rdfs:domain :HabitatgeABSTRACTE ;
+           rdfs:range [ rdf:type rdfs:Datatype ;
+                        owl:oneOf [ rdf:type rdf:List ;
+                                    rdf:first "gran" ;
+                                    rdf:rest [ rdf:type rdf:List ;
+                                               rdf:first "moltPetit" ;
+                                               rdf:rest [ rdf:type rdf:List ;
+                                                          rdf:first "normal" ;
+                                                          rdf:rest [ rdf:type rdf:List ;
+                                                                     rdf:first "petit" ;
+                                                                     rdf:rest rdf:nil
+                                                                   ]
+                                                        ]
+                                             ]
+                                  ]
+                      ] .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#mascotes_permeses
-:mascotes_permeses rdf:type owl:DatatypeProperty ;
-                   rdfs:domain :Habitatge ;
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#jardi
+:jardi rdf:type owl:DatatypeProperty ;
+       rdfs:domain :HabitatgeABSTRACTE ,
+                   :HabitatgeCONCRET ;
+       rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#mascotesPermeses
+:mascotesPermeses rdf:type owl:DatatypeProperty ;
+                  rdfs:domain :HabitatgeABSTRACTE ,
+                              :HabitatgeCONCRET ;
+                  rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#nom
+:nom rdf:type owl:DatatypeProperty ;
+     rdfs:domain :BarriABSTRACTE ,
+                 :BarriCONCRET ;
+     rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#nomBarri
+:nomBarri rdf:type owl:DatatypeProperty ;
+          rdfs:domain :HabitatgeABSTRACTE ,
+                      :HabitatgeCONCRET ,
+                      :Servei ;
+          rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#nomCarrer
+:nomCarrer rdf:type owl:DatatypeProperty ;
+           rdfs:domain :HabitatgeABSTRACTE ,
+                       :HabitatgeCONCRET ;
+           rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#numPisos
+:numPisos rdf:type owl:DatatypeProperty ;
+          rdfs:domain :Unifamiliar ;
+          rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#obraNova
+:obraNova rdf:type owl:DatatypeProperty ;
+          rdfs:domain :HabitatgeABSTRACTE ,
+                      :HabitatgeCONCRET ;
+          rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#parking
+:parking rdf:type owl:DatatypeProperty ;
+         rdfs:domain :HabitatgeABSTRACTE ,
+                     :HabitatgeCONCRET ;
+         rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#piscinaComunitaria
+:piscinaComunitaria rdf:type owl:DatatypeProperty ;
+                    rdfs:domain :HabitatgeABSTRACTE ,
+                                :HabitatgeCONCRET ;
+                    rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#piscinaIndividual
+:piscinaIndividual rdf:type owl:DatatypeProperty ;
+                   rdfs:domain :HabitatgeABSTRACTE ,
+                               :HabitatgeCONCRET ;
                    rdfs:range xsd:boolean .
-
-
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#moblada
-:moblada rdf:type owl:DatatypeProperty ;
-         rdfs:domain :Habitatge ;
-         rdfs:range xsd:boolean .
-
-
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#num_pisos
-:num_pisos rdf:type owl:DatatypeProperty ;
-           rdfs:domain :Unifamiliar ;
-           rdfs:range xsd:int .
-
-
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#pisc_individual
-:pisc_individual rdf:type owl:DatatypeProperty ;
-                 rdfs:subPropertyOf :piscina ;
-                 rdfs:domain :Habitatge ;
-                 rdfs:range xsd:boolean .
-
-
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#piscina
-:piscina rdf:type owl:DatatypeProperty ;
-         rdfs:domain :Habitatge ;
-         rdfs:range xsd:boolean .
 
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#planta
 :planta rdf:type owl:DatatypeProperty ;
-        rdfs:domain :Duplex ,
-                    :Pis ;
-        rdfs:range xsd:int .
+        rdfs:domain :HabitatgeCONCRET ;
+        rdfs:range xsd:integer .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#plaça
-:plaça rdf:type owl:DatatypeProperty ;
-       rdfs:subPropertyOf :garatge ;
-       rdfs:domain :Habitatge ;
-       rdfs:range xsd:boolean .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#preu
+:preu rdf:type owl:DatatypeProperty ;
+      rdfs:domain :HabitatgeCONCRET ;
+      rdfs:range xsd:integer .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#preu_mensual
-:preu_mensual rdf:type owl:DatatypeProperty ,
-                       owl:FunctionalProperty ;
-              rdfs:domain :Habitatge ;
-              rdfs:range xsd:double .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#qualitatDelsAcabats
+:qualitatDelsAcabats rdf:type owl:DatatypeProperty ;
+                     rdfs:domain :HabitatgeABSTRACTE ,
+                                 :HabitatgeCONCRET ;
+                     rdfs:range [ rdf:type rdfs:Datatype ;
+                                  owl:oneOf [ rdf:type rdf:List ;
+                                              rdf:first "Alt" ;
+                                              rdf:rest [ rdf:type rdf:List ;
+                                                         rdf:first "Baix" ;
+                                                         rdf:rest [ rdf:type rdf:List ;
+                                                                    rdf:first "Mitja" ;
+                                                                    rdf:rest rdf:nil
+                                                                  ]
+                                                       ]
+                                            ]
+                                ] .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#sencer
-:sencer rdf:type owl:DatatypeProperty ;
-        rdfs:subPropertyOf :garatge ;
-        rdfs:domain :Habitatge ;
-        rdfs:range xsd:boolean .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#riquesaBarri
+:riquesaBarri rdf:type owl:DatatypeProperty ;
+              rdfs:domain :BarriABSTRACTE ;
+              rdfs:range [ rdf:type rdfs:Datatype ;
+                           owl:oneOf [ rdf:type rdf:List ;
+                                       rdf:first "mitjana" ;
+                                       rdf:rest [ rdf:type rdf:List ;
+                                                  rdf:first "pobre" ;
+                                                  rdf:rest [ rdf:type rdf:List ;
+                                                             rdf:first "rica" ;
+                                                             rdf:rest rdf:nil
+                                                           ]
+                                                ]
+                                     ]
+                         ] .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#simples
-:simples rdf:type owl:DatatypeProperty ;
-         rdfs:subPropertyOf :dormitoris ;
-         rdfs:range xsd:int .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#souMitja
+:souMitja rdf:type owl:DatatypeProperty ;
+          rdfs:domain :BarriCONCRET ;
+          rdfs:range xsd:integer .
 
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#superficie
 :superficie rdf:type owl:DatatypeProperty ;
-            rdfs:domain :Habitatge ;
-            rdfs:range xsd:int .
+            rdfs:domain :HabitatgeCONCRET ;
+            rdfs:range xsd:integer .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#tamany
+:tamany rdf:type owl:DatatypeProperty ;
+        rdfs:domain :Supermercat ;
+        rdfs:range [ rdf:type rdfs:Datatype ;
+                     owl:oneOf [ rdf:type rdf:List ;
+                                 rdf:first "Gran" ;
+                                 rdf:rest [ rdf:type rdf:List ;
+                                            rdf:first "Petit" ;
+                                            rdf:rest rdf:nil
+                                          ]
+                               ]
+                   ] .
 
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#terrassa
 :terrassa rdf:type owl:DatatypeProperty ;
-          rdfs:domain :Habitatge ;
+          rdfs:domain :HabitatgeABSTRACTE ,
+                      :HabitatgeCONCRET ;
           rdfs:range xsd:boolean .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#valor_mobles/electrodomestics
-<http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#valor_mobles/electrodomestics> rdf:type owl:DatatypeProperty ;
-                                                                                                 rdfs:subPropertyOf :moblada ;
-                                                                                                 rdfs:domain :Habitatge ;
-                                                                                                 rdfs:range xsd:double .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#tipus
+:tipus rdf:type owl:DatatypeProperty ;
+       rdfs:domain :HabitatgeABSTRACTE ;
+       rdfs:range [ rdf:type rdfs:Datatype ;
+                    owl:oneOf [ rdf:type rdf:List ;
+                                rdf:first "Apartament" ;
+                                rdf:rest [ rdf:type rdf:List ;
+                                           rdf:first "Atic" ;
+                                           rdf:rest [ rdf:type rdf:List ;
+                                                      rdf:first "CasaAdosada" ;
+                                                      rdf:rest [ rdf:type rdf:List ;
+                                                                 rdf:first "CasaIndividual" ;
+                                                                 rdf:rest [ rdf:type rdf:List ;
+                                                                            rdf:first "Duplex" ;
+                                                                            rdf:rest [ rdf:type rdf:List ;
+                                                                                       rdf:first "Pis" ;
+                                                                                       rdf:rest [ rdf:type rdf:List ;
+                                                                                                  rdf:first "Unifamiliar" ;
+                                                                                                  rdf:rest [ rdf:type rdf:List ;
+                                                                                                             rdf:first "Xalet" ;
+                                                                                                             rdf:rest rdf:nil
+                                                                                                           ]
+                                                                                                ]
+                                                                                     ]
+                                                                          ]
+                                                               ]
+                                                    ]
+                                         ]
+                              ]
+                  ] .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#vistes
+:vistes rdf:type owl:DatatypeProperty ;
+        rdfs:domain :HabitatgeABSTRACTE ,
+                    :HabitatgeCONCRET ;
+        rdfs:range xsd:boolean .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#xemeneia
+:xemeneia rdf:type owl:DatatypeProperty ;
+          rdfs:domain :HabitatgeABSTRACTE ,
+                      :HabitatgeCONCRET ;
+          rdfs:range xsd:boolean .
 
 
 #################################################################
 #    Classes
 #################################################################
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Duplex
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Apartament
+:Apartament rdf:type owl:Class ;
+            rdfs:subClassOf :Pis .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Atic
+:Atic rdf:type owl:Class ;
+      rdfs:subClassOf :Pis .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#BarriABSTRACTE
+:BarriABSTRACTE rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#BarriCONCRET
+:BarriCONCRET rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#CasaAdosada
+:CasaAdosada rdf:type owl:Class ;
+             rdfs:subClassOf :HabitatgeCONCRET .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#CasaIndividual
+:CasaIndividual rdf:type owl:Class ;
+                rdfs:subClassOf :HabitatgeCONCRET .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#CentreEsportiu
+:CentreEsportiu rdf:type owl:Class ;
+                rdfs:subClassOf :Servei .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#CentreSalut
+:CentreSalut rdf:type owl:Class ;
+             rdfs:subClassOf :Servei .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Cinema
+:Cinema rdf:type owl:Class ;
+        rdfs:subClassOf :Oci .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Duplex
 :Duplex rdf:type owl:Class ;
-        rdfs:subClassOf :Habitatge .
+        rdfs:subClassOf :Pis .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Educacio
-:Educacio rdf:type owl:Class ;
-          rdfs:subClassOf :Servei .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Escola
+:Escola rdf:type owl:Class ;
+        rdfs:subClassOf :Servei .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Habitatge
-:Habitatge rdf:type owl:Class .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Gimnas
+:Gimnas rdf:type owl:Class ;
+        rdfs:subClassOf :Servei .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Mercat
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#HabitatgeABSTRACTE
+:HabitatgeABSTRACTE rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#HabitatgeCONCRET
+:HabitatgeCONCRET rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Mercat
 :Mercat rdf:type owl:Class ;
         rdfs:subClassOf :Servei .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Oci
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Oci
 :Oci rdf:type owl:Class ;
      rdfs:subClassOf :Servei .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Persona
-:Persona rdf:type owl:Class .
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Parc
+:Parc rdf:type owl:Class ;
+      rdfs:subClassOf :Servei .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Residencia
+:Residencia rdf:type owl:Class ;
+            rdfs:subClassOf :Servei .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Restaurant
+:Restaurant rdf:type owl:Class ;
+            rdfs:subClassOf :Oci .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Supermercat
+:Supermercat rdf:type owl:Class ;
+             rdfs:subClassOf :Servei .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Teatre
+:Teatre rdf:type owl:Class ;
+        rdfs:subClassOf :Oci .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#TransportPublic
+:TransportPublic rdf:type owl:Class ;
+                 rdfs:subClassOf :Servei .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Universistat
+:Universistat rdf:type owl:Class ;
+              rdfs:subClassOf :Servei .
+
+
+###  http://www.semanticweb.org/andre/ontologies/2021/10/ontologiaSBC#Xalet
+:Xalet rdf:type owl:Class ;
+       rdfs:subClassOf :Unifamiliar .
 
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Pis
 :Pis rdf:type owl:Class ;
-     rdfs:subClassOf :Habitatge .
-
-
-###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Salut
-:Salut rdf:type owl:Class ;
-       rdfs:subClassOf :Servei .
+     rdfs:subClassOf :HabitatgeCONCRET .
 
 
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Servei
 :Servei rdf:type owl:Class .
 
 
-###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Transport
-:Transport rdf:type owl:Class ;
-           rdfs:subClassOf :Servei .
-
-
 ###  http://www.semanticweb.org/andre/ontologies/2021/10/untitled-ontology-6#Unifamiliar
 :Unifamiliar rdf:type owl:Class ;
-             rdfs:subClassOf :Habitatge .
-
-
-#################################################################
-#    General axioms
-#################################################################
-
-[ rdf:type owl:AllDisjointClasses ;
-  owl:members ( :Duplex
-                :Pis
-                :Unifamiliar
-              )
-] .
-
-
-[ rdf:type owl:AllDisjointClasses ;
-  owl:members ( :Educacio
-                :Mercat
-                :Oci
-                :Salut
-                :Transport
-              )
-] .
-
-
-[ rdf:type owl:AllDisjointClasses ;
-  owl:members ( :Habitatge
-                :Persona
-                :Servei
-              )
-] .
+             rdfs:subClassOf :HabitatgeCONCRET .
 
 
 ###  Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi
